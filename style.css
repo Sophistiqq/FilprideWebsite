@@ -1,18 +1,18 @@
 :root {
   --bg-primary: #0a0a0c;
-  --text-primary: #fcfaf2; /* Softened Beige */
+  --text-primary: #fcfaf2;
   --bg-secondary: #111114;
   --accent: #f26522;
   --accent-alt: #d62b1f;
   --yellow: #ffd200;
-  --white: #fcfaf2; /* Softened Beige */
+  --white: #fcfaf2;
   --ivory: #fff8f0;
   --ink: #0a0a0c;
   --muted: rgba(252, 250, 242, 0.7);
 }
 
 body.light-mode {
-  --bg-primary: #fcfaf2; /* Softened Beige */
+  --bg-primary: #fcfaf2;
   --text-primary: #0a0a0c;
   --bg-secondary: #f4f1ed;
   --muted: rgba(10, 10, 12, 0.7);
@@ -264,7 +264,7 @@ body.no-scroll {
   margin-bottom: 1.5rem;
 }
 
-/* ─── HORIZONTAL SCROLL SECTIONS ─── */
+/* ─── HORIZONTAL SCROLL ─── */
 .horizontal-panel {
   height: 100vh;
   overflow: hidden;
@@ -290,10 +290,10 @@ body.no-scroll {
   padding-right: 40vw;
 }
 
-/* ─── GROUP CARDS ─── */
+/* ─── GROUP CARDS (REFINED SIZE) ─── */
 .group-card {
-  min-width: 450px;
-  height: 500px;
+  min-width: 420px; /* Slightly reduced */
+  height: 480px; /* Slightly reduced */
   margin-right: 3rem;
   padding: 4rem 3rem;
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -302,8 +302,8 @@ body.no-scroll {
   justify-content: flex-end;
   position: relative;
   overflow: hidden;
-  transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
   background: rgba(10, 10, 12, 0.85);
+  transition: border-color 0.4s, opacity 0.4s;
 }
 
 .group-card-bg {
@@ -312,7 +312,8 @@ body.no-scroll {
   background-size: cover;
   background-position: center;
   z-index: 0;
-  transition: transform 1.2s cubic-bezier(0.165, 0.84, 0.44, 1);
+  filter: blur(4px); /* Initial Blur */
+  transition: transform 1.2s cubic-bezier(0.165, 0.84, 0.44, 1), filter 0.6s ease;
 }
 
 .group-card-overlay {
@@ -324,10 +325,10 @@ body.no-scroll {
 
 .group-card:hover .group-card-bg {
   transform: scale(1.15);
+  filter: blur(0px); /* Reduce blur on hover */
 }
 
 .group-card:hover {
-  transform: translateY(-15px);
   border-color: var(--accent);
   background: transparent;
 }
@@ -339,16 +340,16 @@ body.no-scroll {
 
 .group-card h3 {
   font-family: 'Barlow Condensed', sans-serif;
-  font-size: 2.2rem;
+  font-size: 2rem;
   text-transform: uppercase;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.2rem;
   color: var(--white);
   line-height: 1.1;
 }
 
-/* ─── USA88 (RETAIL) CIRCULAR WIPER ─── */
+/* ─── USA88 (RETAIL) GIANT WIPER ─── */
 .brand-panel {
-  padding: 20vh 6rem; /* Breathing room */
+  padding: 20vh 6rem;
   background: var(--bg-primary);
   position: relative;
   overflow: hidden;
@@ -356,55 +357,17 @@ body.no-scroll {
 
 .wiper-overlay {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 200vw; /* Oversized for rotation */
-  height: 200vh;
+  top: -100vh; /* Shift up to cover */
+  left: -100vw; /* Shift left to cover */
+  width: 300vw; /* Massively oversized */
+  height: 300vh; /* Massively oversized */
   background: var(--accent);
   z-index: 10;
-  transform-origin: 50% 150%; /* Pivot point below screen */
+  transform-origin: 50% 100%; /* Pivot point below screen */
   transform: rotate(0deg);
 }
 
-.brand-main-grid {
-  display: grid;
-  grid-template-columns: 1fr 1.2fr;
-  gap: 8rem;
-  margin-top: 5rem;
-}
-
-.loc-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2rem;
-}
-
-.loc-card {
-  background: rgba(255, 255, 255, 0.03);
-  padding: 2.5rem;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-}
-
-.loc-card:hover {
-  background: var(--accent);
-  transform: translateY(-8px);
-}
-
-.loc-card:hover strong, .loc-card:hover {
-  color: var(--white);
-}
-
-.loc-card strong {
-  display: block;
-  font-family: 'Barlow Condensed', sans-serif;
-  font-size: 1.3rem;
-  color: var(--accent);
-  margin-bottom: 0.5rem;
-  text-transform: uppercase;
-}
-
-/* ─── MILESTONES ─── */
+/* ─── MILESTONES (HOVER REVEAL) ─── */
 .milestone-card {
   min-width: 550px;
   height: 550px;
@@ -415,6 +378,7 @@ body.no-scroll {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  cursor: pointer;
 }
 
 .milestone-year {
@@ -425,9 +389,14 @@ body.no-scroll {
   line-height: 1;
   margin-bottom: 2rem;
   opacity: 0.15;
+  transition: opacity 0.4s ease;
 }
 
-/* ─── CONTACT / FOOTER ─── */
+.milestone-card:hover .milestone-year {
+  opacity: 0.7; /* More visible on hover */
+}
+
+/* ─── FOOTER ─── */
 .footer-expanded {
   display: grid;
   grid-template-columns: 1.2fr 1.5fr 1fr;

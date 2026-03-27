@@ -2,10 +2,10 @@ gsap.registerPlugin(ScrollTrigger);
 
 // ─── CONFIG ───
 const BG_IMAGES = [
-  "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&q=80&w=1920",
-  "https://images.unsplash.com/photo-1466611653911-95282fc365d5?auto=format&fit=crop&q=80&w=1920",
-  "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=1920",
-  "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&q=80&w=1920"
+  "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&q=80&w=1920", // General energy
+  "https://images.unsplash.com/photo-1466611653911-95282fc365d5?auto=format&fit=crop&q=80&w=1920", // Green energy
+  "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=1920", // Industry
+  "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&q=80&w=1920" // Fuel station
 ];
 
 function preloadImages(urls) {
@@ -80,7 +80,7 @@ function initCursor() {
     ySet(pos.y);
   });
 
-  const triggers = document.querySelectorAll(".bg-trigger, a, .cta-link, .loc-card");
+  const triggers = document.querySelectorAll(".bg-trigger, a, .cta-link, .loc-card, .milestone-card");
   triggers.forEach(el => {
     el.addEventListener("mouseenter", () => gsap.to(trail, { scale: 3, rotation: 135, duration: 0.3 }));
     el.addEventListener("mouseleave", () => gsap.to(trail, { scale: 1, rotation: 45, duration: 0.3 }));
@@ -93,20 +93,20 @@ function initBackground() {
   const s2 = document.querySelector(".s2");
   const wrapper = document.querySelector(".bg-wrapper");
   let currentIndex = 0;
-  let isSlideshowSection = true; // Hero starts as slideshow
+  let isSlideshowSection = false; // Initial state for wrapper opacity
   let isHovering = false;
   let interval;
 
-  const setBg = (url) => {
-    const active = document.querySelector(".bg-slide.active") || s1;
+  const setBg = (url, duration = 1.5) => {
+    const active = document.querySelector(".bg-slide.active");
     const next = active === s1 ? s2 : s1;
     const img = new Image();
     img.src = url;
     img.onload = () => {
       next.style.backgroundImage = `url('${url}')`;
-      gsap.to(wrapper, { opacity: 1, duration: 1.5 });
+      gsap.to(wrapper, { opacity: 1, duration: duration });
       next.classList.add("active");
-      active.classList.remove("active");
+      if (active) active.classList.remove("active");
     };
   };
 
@@ -116,39 +116,71 @@ function initBackground() {
     setBg(BG_IMAGES[currentIndex]);
   };
 
-  // Initial
-  s1.style.backgroundImage = `url('${BG_IMAGES[0]}')`;
-  s1.classList.add("active");
-  interval = setInterval(nextSlide, 6000);
+  // Set initial background for Hero section
+  setBg(BG_IMAGES[0]);
 
-  // Section Tracking for Slideshow
-  const trackSections = (trigger, slideshow) => {
+  // Section Tracking for Slideshow/Hover behavior
+  const setupSectionBackground = (trigger, slideshow, image = null) => {
     ScrollTrigger.create({
       trigger: trigger,
-      start: "top 80%",
-      end: "bottom 20%",
+      start: "top center",
+      end: "bottom center",
       onEnter: () => {
         isSlideshowSection = slideshow;
-        if (slideshow) gsap.to(wrapper, { opacity: 1, duration: 1.5 });
-        else if (!isHovering) gsap.to(wrapper, { opacity: 0, duration: 1.5 });
+        clearInterval(interval); // Clear any existing interval
+
+        if (slideshow) {
+          gsap.to(wrapper, { opacity: 1, duration: 1.5 });
+          interval = setInterval(nextSlide, 6000);
+        } else {
+          // For non-slideshow sections, if no specific hover bg, turn off wrapper
+          if (!isHovering) {
+            gsap.to(wrapper, { opacity: 0, duration: 1.5 });
+          }
+        }
+
+        if (image && !slideshow) { // Set specific image for non-slideshow sections if provided
+          setBg(image);
+        }
+      },
+      onLeave: () => {
+        if (!slideshow && !isHovering) {
+          gsap.to(wrapper, { opacity: 0, duration: 1.5 });
+        }
       },
       onEnterBack: () => {
         isSlideshowSection = slideshow;
-        if (slideshow) gsap.to(wrapper, { opacity: 1, duration: 1.5 });
-        else if (!isHovering) gsap.to(wrapper, { opacity: 0, duration: 1.5 });
+        clearInterval(interval);
+        if (slideshow) {
+          gsap.to(wrapper, { opacity: 1, duration: 1.5 });
+          interval = setInterval(nextSlide, 6000);
+        } else {
+          if (!isHovering) {
+            gsap.to(wrapper, { opacity: 0, duration: 1.5 });
+          }
+        }
+        if (image && !slideshow) {
+          setBg(image);
+        }
+      },
+      onLeaveBack: () => {
+        if (!slideshow && !isHovering) {
+          gsap.to(wrapper, { opacity: 0, duration: 1.5 });
+        }
       }
     });
   };
 
-  trackSections("#hero", true);
-  trackSections("#about", false);
-  trackSections("#group", false);
-  trackSections("#brand", false);
-  trackSections("#history", false);
-  trackSections("#green", false);
-  trackSections("#contact", true);
+  // Configure sections: (trigger, isSlideshow, specificImageForNonSlideshow)
+  setupSectionBackground("#hero", true);
+  setupSectionBackground("#about", false);
+  setupSectionBackground("#group", false);
+  setupSectionBackground("#brand", false);
+  setupSectionBackground("#history", false);
+  setupSectionBackground("#green", true, "https://images.unsplash.com/photo-1466611653911-95282fc365d5?auto=format&fit=crop&q=80&w=1920"); // Green Energy with specific bg
+  setupSectionBackground("#contact", true);
 
-  // Hover Triggers
+  // Hover Triggers for general elements
   document.querySelectorAll(".bg-trigger").forEach(el => {
     el.addEventListener("mouseenter", () => {
       isHovering = true;
@@ -156,6 +188,7 @@ function initBackground() {
     });
     el.addEventListener("mouseleave", () => {
       isHovering = false;
+      // If not in a slideshow section, fade out global background
       if (!isSlideshowSection) gsap.to(wrapper, { opacity: 0, duration: 1.5 });
     });
   });
@@ -167,7 +200,7 @@ function initHorizontal() {
 
   horizontalSections.forEach(section => {
     const wrapper = section.querySelector(".horizontal-wrapper");
-    const scrollWidth = wrapper.offsetWidth - window.innerWidth;
+    const scrollWidth = wrapper.scrollWidth - window.innerWidth + window.innerWidth * 0.1; // Add some buffer
 
     gsap.to(wrapper, {
       x: -scrollWidth,
@@ -180,23 +213,35 @@ function initHorizontal() {
         invalidateOnRefresh: true
       }
     });
+
+    // Reduce opacity of non-hovered group cards
+    const cards = section.querySelectorAll(".group-card");
+    cards.forEach(card => {
+        card.addEventListener("mouseenter", () => {
+            gsap.to(cards, { opacity: 0.4, duration: 0.3 });
+            gsap.to(card, { opacity: 1, duration: 0.3 });
+        });
+        card.addEventListener("mouseleave", () => {
+            gsap.to(cards, { opacity: 1, duration: 0.3 });
+        });
+    });
+
   });
 }
 
 // ─── CIRCULAR WIPER REVEAL ───
 function initWiper() {
-  // Pivot from bottom-center (transform-origin: 50% 150%)
-  // Start at 0deg (covering) and rotate to -120deg (wiping away)
-  gsap.fromTo(".wiper-overlay", 
-    { rotate: 0 },
+  gsap.fromTo(".wiper-overlay",
+    { rotate: 0 }, // Starts fully covering
     {
-      rotate: -120,
+      rotate: -120, // Wipes to -120 degrees
       ease: "power2.inOut",
       scrollTrigger: {
         trigger: "#brand",
         start: "top bottom",
         end: "top 10%",
-        scrub: 1.5
+        scrub: 1.5,
+        // onUpdate: self => console.log("Wiper progress: ", self.progress) // Debugging
       }
     }
   );
