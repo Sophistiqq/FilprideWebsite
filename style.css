@@ -290,6 +290,82 @@ body.no-scroll {
   padding-right: 40vw;
 }
 
+/* ─── GREEN PANEL TEXT OVERRIDE ─── */
+.green-panel .big-text,
+.green-panel .panel-body p,
+.green-panel .section-tag {
+  color: var(--white) !important;
+}
+
+/* ─── LEGACY STAT ITEMS (HORIZONTAL WITH CONNECTORS) ─── */
+.panel-stats {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.5rem 2.5rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+}
+
+.stat-item:not(:last-child)::after {
+  content: "○──○";
+  position: absolute;
+  right: -2.2rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 1.2rem;
+  color: var(--accent);
+  opacity: 0.6;
+}
+
+.stat-item .val {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 3.5rem;
+  font-weight: 900;
+  color: var(--accent);
+  line-height: 1;
+  transition: all 0.3s ease;
+}
+
+.stat-item .key {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.stat-item:hover {
+  background: rgba(242, 101, 34, 0.15);
+  border-color: var(--accent);
+  transform: translateY(-5px) scale(1.05);
+}
+
+.stat-item:hover .val {
+  color: var(--yellow);
+  transform: scale(1.1);
+}
+
+.stat-item:hover .key {
+  color: var(--white);
+  letter-spacing: 0.25em;
+}
+
 /* ─── GROUP CARDS (REFINED SIZE) ─── */
 .group-card {
   min-width: 420px; /* Slightly reduced */
@@ -419,5 +495,29 @@ body.no-scroll {
   .brand-main-grid, .footer-expanded {
     grid-template-columns: 1fr;
     gap: 4rem;
+  }
+}
+
+@media (max-width: 900px) {
+  .panel-stats {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+
+  .stat-item:not(:last-child)::after {
+    content: "○";
+    right: 50%;
+    bottom: -1.8rem;
+    top: auto;
+    transform: translateX(50%) rotate(90deg);
+  }
+
+  .stat-item {
+    padding: 1.2rem 2rem;
+  }
+
+  .stat-item .val {
+    font-size: 2.5rem;
   }
 }

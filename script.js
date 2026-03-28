@@ -180,6 +180,17 @@ function initBackground() {
   setupSectionBackground("#green", true, "https://images.unsplash.com/photo-1466611653911-95282fc365d5?auto=format&fit=crop&q=80&w=1920"); // Green Energy with specific bg
   setupSectionBackground("#contact", true);
 
+  // History section light/dark mode toggle
+  ScrollTrigger.create({
+    trigger: "#history",
+    start: "top 50%",
+    end: "bottom 50%",
+    onEnter: () => document.body.classList.add('light-mode'),
+    onLeave: () => document.body.classList.remove('light-mode'),
+    onEnterBack: () => document.body.classList.add('light-mode'),
+    onLeaveBack: () => document.body.classList.remove('light-mode'),
+  });
+
   // Hover Triggers for general elements
   document.querySelectorAll(".bg-trigger").forEach(el => {
     el.addEventListener("mouseenter", () => {
