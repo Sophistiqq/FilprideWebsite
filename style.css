@@ -31,7 +31,8 @@ img {
   height: auto;
 }
 
-html, body {
+html,
+body {
   width: 100%;
   margin: 0;
   padding: 0;
@@ -64,7 +65,8 @@ body.no-scroll {
   background-size: cover;
   background-position: center;
   opacity: 0;
-  transition: opacity 1.5s ease-in-out; /* Standardized Slow Transition */
+  transition: opacity 1.5s ease-in-out;
+  /* Standardized Slow Transition */
 }
 
 .bg-slide.active {
@@ -74,7 +76,7 @@ body.no-scroll {
 .bg-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to bottom, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.85) 100%);
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.3) 50%, rgba(0, 0, 0, 0.85) 100%);
   z-index: 1;
 }
 
@@ -302,7 +304,6 @@ body.no-scroll {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  gap: 2rem;
   margin-top: 2rem;
 }
 
@@ -317,18 +318,20 @@ body.no-scroll {
   cursor: pointer;
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   position: relative;
+  z-index: 1;
+  flex-shrink: 0;
 }
 
-.stat-item:not(:last-child)::after {
-  content: "○──○";
-  position: absolute;
-  right: -2.2rem;
-  top: 50%;
-  transform: translateY(-50%);
+.stat-connector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-family: 'Barlow Condensed', sans-serif;
   font-size: 1.2rem;
   color: var(--accent);
   opacity: 0.6;
+  padding: 0 0.5rem;
+  flex-shrink: 0;
 }
 
 .stat-item .val {
@@ -368,8 +371,10 @@ body.no-scroll {
 
 /* ─── GROUP CARDS (REFINED SIZE) ─── */
 .group-card {
-  min-width: 420px; /* Slightly reduced */
-  height: 480px; /* Slightly reduced */
+  min-width: 420px;
+  /* Slightly reduced */
+  height: 480px;
+  /* Slightly reduced */
   margin-right: 3rem;
   padding: 4rem 3rem;
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -388,20 +393,22 @@ body.no-scroll {
   background-size: cover;
   background-position: center;
   z-index: 0;
-  filter: blur(4px); /* Initial Blur */
+  filter: blur(4px);
+  /* Initial Blur */
   transition: transform 1.2s cubic-bezier(0.165, 0.84, 0.44, 1), filter 0.6s ease;
 }
 
 .group-card-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.7) 100%);
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.3) 50%, rgba(0, 0, 0, 0.7) 100%);
   z-index: 1;
 }
 
 .group-card:hover .group-card-bg {
   transform: scale(1.15);
-  filter: blur(0px); /* Reduce blur on hover */
+  filter: blur(0px);
+  /* Reduce blur on hover */
 }
 
 .group-card:hover {
@@ -433,13 +440,18 @@ body.no-scroll {
 
 .wiper-overlay {
   position: absolute;
-  top: -100vh; /* Shift up to cover */
-  left: -100vw; /* Shift left to cover */
-  width: 300vw; /* Massively oversized */
-  height: 300vh; /* Massively oversized */
+  top: -100vh;
+  /* Shift up to cover */
+  left: -100vw;
+  /* Shift left to cover */
+  width: 300vw;
+  /* Massively oversized */
+  height: 300vh;
+  /* Massively oversized */
   background: var(--accent);
   z-index: 10;
-  transform-origin: 50% 100%; /* Pivot point below screen */
+  transform-origin: 50% 100%;
+  /* Pivot point below screen */
   transform: rotate(0deg);
 }
 
@@ -469,7 +481,8 @@ body.no-scroll {
 }
 
 .milestone-card:hover .milestone-year {
-  opacity: 0.7; /* More visible on hover */
+  opacity: 0.9;
+  /* More visible on hover */
 }
 
 /* ─── FOOTER ─── */
@@ -492,7 +505,9 @@ body.no-scroll {
 
 /* ─── RESPONSIVE ─── */
 @media (max-width: 1100px) {
-  .brand-main-grid, .footer-expanded {
+
+  .brand-main-grid,
+  .footer-expanded {
     grid-template-columns: 1fr;
     gap: 4rem;
   }
@@ -502,15 +517,27 @@ body.no-scroll {
   .panel-stats {
     flex-direction: column;
     align-items: stretch;
-    gap: 1rem;
+  }
+
+  .stat-connector {
+    display: none;
+  }
+
+  .stat-item:not(:last-child) {
+    margin-bottom: 0.5rem;
+    padding-bottom: 2rem;
+    position: relative;
   }
 
   .stat-item:not(:last-child)::after {
     content: "○";
-    right: 50%;
-    bottom: -1.8rem;
-    top: auto;
-    transform: translateX(50%) rotate(90deg);
+    display: block;
+    margin-top: 0.5rem;
+    text-align: center;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1.2rem;
+    color: var(--accent);
+    opacity: 0.6;
   }
 
   .stat-item {
