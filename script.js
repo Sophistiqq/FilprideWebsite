@@ -1,11 +1,11 @@
 gsap.registerPlugin(ScrollTrigger);
 
-// â”€â”€â”€ CONFIG â”€â”€â”€
+// ÄÄÄ CONFIG ÄÄÄ
 const BG_IMAGES = [
-  "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&q=80&w=1920", // General energy
-  "https://images.unsplash.com/photo-1466611653911-95282fc365d5?auto=format&fit=crop&q=80&w=1920", // Green energy
-  "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=1920", // Industry
-  "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&q=80&w=1920" // Fuel station
+  "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&q=80&w=1920",
+  "https://images.unsplash.com/photo-1466611653911-95282fc365d5?auto=format&fit=crop&q=80&w=1920",
+  "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=1920",
+  "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&q=80&w=1920"
 ];
 
 function preloadImages(urls) {
@@ -16,8 +16,37 @@ function preloadImages(urls) {
 }
 preloadImages(BG_IMAGES);
 
-// â”€â”€â”€ LOADER â”€â”€â”€
+// ÄÄÄ LOADER ÄÄÄ
+// Uses sessionStorage so the intro animation only plays ONCE per browser session.
+// Navigating back from a company sub-page skips the loader entirely.
 function initLoader() {
+  const hasLoaded = sessionStorage.getItem('filpride_loaded');
+
+  if (hasLoaded) {
+    // ÄÄ SKIP: instant reveal for return visits ÄÄ
+    const loader = document.querySelector(".loader-wrapper");
+    const leftPanel = document.querySelector(".curtain-panel.left");
+    const rightPanel = document.querySelector(".curtain-panel.right");
+
+    if (loader) loader.style.display = "none";
+    if (leftPanel) leftPanel.style.transform = "translateX(-100%)";
+    if (rightPanel) rightPanel.style.transform = "translateX(100%)";
+
+    document.body.classList.remove("no-scroll");
+
+    // Still animate hero text in smoothly
+    gsap.from(".hero-title .line", {
+      y: 60, opacity: 0, stagger: 0.12, duration: 1, ease: "power3.out", delay: 0.1
+    });
+    gsap.from(".hero-eyebrow, .hero-subtitle, .scroll-indicator, .glass-nav", {
+      opacity: 0, y: 15, stagger: 0.08, duration: 0.7, delay: 0.3
+    });
+    return;
+  }
+
+  // ÄÄ FIRST VISIT: full cinematic loader ÄÄ
+  sessionStorage.setItem('filpride_loaded', 'true');
+
   window.scrollTo(0, 0);
   const tl = gsap.timeline();
   let count = { val: 0 };
@@ -27,7 +56,8 @@ function initLoader() {
     duration: 2.5,
     ease: "power2.inOut",
     onUpdate: () => {
-      document.querySelector(".loader-num").textContent = Math.floor(count.val).toString().padStart(2, '0');
+      document.querySelector(".loader-num").textContent =
+        Math.floor(count.val).toString().padStart(2, '0');
       document.querySelector(".loader-bar-inner").style.width = `${count.val}%`;
     }
   });
@@ -47,18 +77,28 @@ function initLoader() {
   tl.fromTo(".r4", { x: 800, opacity: 0 }, { x: 0, opacity: 1, duration: 0.8, ease: "back.out(1.7)" }, "-=0.6");
   tl.to(".rhombus-core", { scale: 1, opacity: 1, duration: 0.4 }, "-=0.2");
 
-  tl.to(".rhombus", { x: (i) => (i % 2 ? 1500 : -1500), y: (i) => (i < 2 ? -1000 : 1000), rotation: 180, opacity: 0, duration: 1, ease: "power4.in" }, "+=0.2");
+  tl.to(".rhombus", {
+    x: (i) => (i % 2 ? 1500 : -1500),
+    y: (i) => (i < 2 ? -1000 : 1000),
+    rotation: 180, opacity: 0, duration: 1, ease: "power4.in"
+  }, "+=0.2");
   tl.to(".rhombus-core", { scale: 8, opacity: 0, duration: 0.8, ease: "power4.in" }, "-=1");
   tl.to(".curtain-panel.left", { xPercent: -100, duration: 1.2, ease: "expo.inOut" }, "-=0.8");
   tl.to(".curtain-panel.right", { xPercent: 100, duration: 1.2, ease: "expo.inOut" }, "-=1.2");
 
-  tl.from(".hero-title .line", { y: 80, opacity: 0, stagger: 0.15, duration: 1.2, ease: "power4.out" }, "-=0.6");
-  tl.from(".hero-eyebrow, .hero-subtitle, .scroll-indicator, .glass-nav", { opacity: 0, y: 20, stagger: 0.1, duration: 0.8 }, "-=0.4");
+  tl.from(".hero-title .line", {
+    y: 80, opacity: 0, stagger: 0.15, duration: 1.2, ease: "power4.out"
+  }, "-=0.6");
+  tl.from(".hero-eyebrow, .hero-subtitle, .scroll-indicator, .glass-nav", {
+    opacity: 0, y: 20, stagger: 0.1, duration: 0.8
+  }, "-=0.4");
 }
 
-// â”€â”€â”€ CURSOR â”€â”€â”€
+// ÄÄÄ CURSOR ÄÄÄ
 function initCursor() {
   const trail = document.querySelector(".cursor-trail");
+  if (!trail) return;
+
   const pos = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
   const mouse = { x: pos.x, y: pos.y };
   const speed = 0.15;
@@ -80,20 +120,20 @@ function initCursor() {
     ySet(pos.y);
   });
 
-  const triggers = document.querySelectorAll(".bg-trigger, a, .cta-link, .loc-card, .milestone-card");
+  const triggers = document.querySelectorAll(".bg-trigger, a, .cta-link, .loc-card, .milestone-card, .group-card");
   triggers.forEach(el => {
     el.addEventListener("mouseenter", () => gsap.to(trail, { scale: 3, rotation: 135, duration: 0.3 }));
     el.addEventListener("mouseleave", () => gsap.to(trail, { scale: 1, rotation: 45, duration: 0.3 }));
   });
 }
 
-// â”€â”€â”€ BACKGROUND HOVER & SLIDESHOW â”€â”€â”€
+// ÄÄÄ BACKGROUND HOVER & SLIDESHOW ÄÄÄ
 function initBackground() {
   const s1 = document.querySelector(".s1");
   const s2 = document.querySelector(".s2");
   const wrapper = document.querySelector(".bg-wrapper");
   let currentIndex = 0;
-  let isSlideshowSection = false; // Initial state for wrapper opacity
+  let isSlideshowSection = false;
   let isHovering = false;
   let interval;
 
@@ -104,7 +144,7 @@ function initBackground() {
     img.src = url;
     img.onload = () => {
       next.style.backgroundImage = `url('${url}')`;
-      gsap.to(wrapper, { opacity: 1, duration: duration });
+      gsap.to(wrapper, { opacity: 1, duration });
       next.classList.add("active");
       if (active) active.classList.remove("active");
     };
@@ -116,37 +156,26 @@ function initBackground() {
     setBg(BG_IMAGES[currentIndex]);
   };
 
-  // Set initial background for Hero section
   setBg(BG_IMAGES[0]);
 
-  // Section Tracking for Slideshow/Hover behavior
   const setupSectionBackground = (trigger, slideshow, image = null) => {
     ScrollTrigger.create({
-      trigger: trigger,
+      trigger,
       start: "top center",
       end: "bottom center",
       onEnter: () => {
         isSlideshowSection = slideshow;
-        clearInterval(interval); // Clear any existing interval
-
+        clearInterval(interval);
         if (slideshow) {
           gsap.to(wrapper, { opacity: 1, duration: 1.5 });
           interval = setInterval(nextSlide, 6000);
         } else {
-          // For non-slideshow sections, if no specific hover bg, turn off wrapper
-          if (!isHovering) {
-            gsap.to(wrapper, { opacity: 0, duration: 1.5 });
-          }
+          if (!isHovering) gsap.to(wrapper, { opacity: 0, duration: 1.5 });
         }
-
-        if (image && !slideshow) { // Set specific image for non-slideshow sections if provided
-          setBg(image);
-        }
+        if (image && !slideshow) setBg(image);
       },
       onLeave: () => {
-        if (!slideshow && !isHovering) {
-          gsap.to(wrapper, { opacity: 0, duration: 1.5 });
-        }
+        if (!slideshow && !isHovering) gsap.to(wrapper, { opacity: 0, duration: 1.5 });
       },
       onEnterBack: () => {
         isSlideshowSection = slideshow;
@@ -155,43 +184,35 @@ function initBackground() {
           gsap.to(wrapper, { opacity: 1, duration: 1.5 });
           interval = setInterval(nextSlide, 6000);
         } else {
-          if (!isHovering) {
-            gsap.to(wrapper, { opacity: 0, duration: 1.5 });
-          }
+          if (!isHovering) gsap.to(wrapper, { opacity: 0, duration: 1.5 });
         }
-        if (image && !slideshow) {
-          setBg(image);
-        }
+        if (image && !slideshow) setBg(image);
       },
       onLeaveBack: () => {
-        if (!slideshow && !isHovering) {
-          gsap.to(wrapper, { opacity: 0, duration: 1.5 });
-        }
+        if (!slideshow && !isHovering) gsap.to(wrapper, { opacity: 0, duration: 1.5 });
       }
     });
   };
 
-  // Configure sections: (trigger, isSlideshow, specificImageForNonSlideshow)
   setupSectionBackground("#hero", true);
   setupSectionBackground("#about", false);
   setupSectionBackground("#group", false);
   setupSectionBackground("#brand", false);
   setupSectionBackground("#history", false);
-  setupSectionBackground("#green", true, "https://images.unsplash.com/photo-1466611653911-95282fc365d5?auto=format&fit=crop&q=80&w=1920"); // Green Energy with specific bg
+  setupSectionBackground("#green", true,
+    "https://images.unsplash.com/photo-1466611653911-95282fc365d5?auto=format&fit=crop&q=80&w=1920"
+  );
   setupSectionBackground("#contact", true);
 
-  // History section light/dark mode toggle
   ScrollTrigger.create({
     trigger: "#history",
-    start: "top 50%",
-    end: "bottom 50%",
-    onEnter: () => document.body.classList.add('light-mode'),
-    onLeave: () => document.body.classList.remove('light-mode'),
-    onEnterBack: () => document.body.classList.add('light-mode'),
-    onLeaveBack: () => document.body.classList.remove('light-mode'),
+    start: "top 50%", end: "bottom 50%",
+    onEnter: () => document.body.classList.add("light-mode"),
+    onLeave: () => document.body.classList.remove("light-mode"),
+    onEnterBack: () => document.body.classList.add("light-mode"),
+    onLeaveBack: () => document.body.classList.remove("light-mode"),
   });
 
-  // Hover Triggers for general elements
   document.querySelectorAll(".bg-trigger").forEach(el => {
     el.addEventListener("mouseenter", () => {
       isHovering = true;
@@ -199,19 +220,16 @@ function initBackground() {
     });
     el.addEventListener("mouseleave", () => {
       isHovering = false;
-      // If not in a slideshow section, fade out global background
       if (!isSlideshowSection) gsap.to(wrapper, { opacity: 0, duration: 1.5 });
     });
   });
 }
 
-// â”€â”€â”€ HORIZONTAL SCROLL â”€â”€â”€
+// ÄÄÄ HORIZONTAL SCROLL ÄÄÄ
 function initHorizontal() {
-  const horizontalSections = document.querySelectorAll(".horizontal-panel");
-
-  horizontalSections.forEach(section => {
+  document.querySelectorAll(".horizontal-panel").forEach(section => {
     const wrapper = section.querySelector(".horizontal-wrapper");
-    const scrollWidth = wrapper.scrollWidth - window.innerWidth + window.innerWidth * 0.1; // Add some buffer
+    const scrollWidth = wrapper.scrollWidth - window.innerWidth + window.innerWidth * 0.1;
 
     gsap.to(wrapper, {
       x: -scrollWidth,
@@ -225,59 +243,54 @@ function initHorizontal() {
       }
     });
 
-    // Reduce opacity of non-hovered group cards
     const cards = section.querySelectorAll(".group-card");
     cards.forEach(card => {
-        card.addEventListener("mouseenter", () => {
-            gsap.to(cards, { opacity: 0.4, duration: 0.3 });
-            gsap.to(card, { opacity: 1, duration: 0.3 });
-        });
-        card.addEventListener("mouseleave", () => {
-            gsap.to(cards, { opacity: 1, duration: 0.3 });
-        });
+      card.addEventListener("mouseenter", () => {
+        gsap.to(cards, { opacity: 0.4, duration: 0.3 });
+        gsap.to(card, { opacity: 1, duration: 0.3 });
+      });
+      card.addEventListener("mouseleave", () => {
+        gsap.to(cards, { opacity: 1, duration: 0.3 });
+      });
     });
-
   });
 }
 
-// â”€â”€â”€ CIRCULAR WIPER REVEAL â”€â”€â”€
+// ÄÄÄ CIRCULAR WIPER REVEAL ÄÄÄ
 function initWiper() {
   gsap.fromTo(".wiper-overlay",
-    { rotate: 0 }, // Starts fully covering
+    { rotate: 0 },
     {
-      rotate: -120, // Wipes to -120 degrees
+      rotate: -120,
       ease: "power2.inOut",
       scrollTrigger: {
         trigger: "#brand",
         start: "top bottom",
         end: "top 10%",
-        scrub: 1.5,
-        // onUpdate: self => console.log("Wiper progress: ", self.progress) // Debugging
+        scrub: 1.5
       }
     }
   );
 }
 
-// â”€â”€â”€ SCROLL REVEALS â”€â”€â”€
+// ÄÄÄ SCROLL REVEALS ÄÄÄ
 function initScroll() {
+  gsap.to(".scroll-progress", {
+    width: "100%",
+    ease: "none",
+    scrollTrigger: { trigger: "body", start: "top top", end: "bottom bottom", scrub: true }
+  });
+
   const panels = gsap.utils.toArray(".panel:not(.horizontal-panel)");
-
   panels.forEach((panel) => {
-    gsap.to(".scroll-progress", {
-      width: "100%",
-      ease: "none",
-      scrollTrigger: { trigger: "body", start: "top top", end: "bottom bottom", scrub: true }
-    });
-
-    if (panel.classList.contains('light')) {
+    if (panel.classList.contains("light")) {
       ScrollTrigger.create({
         trigger: panel,
-        start: "top 50%",
-        end: "bottom 50%",
-        onEnter: () => document.body.classList.add('light-mode'),
-        onLeave: () => document.body.classList.remove('light-mode'),
-        onEnterBack: () => document.body.classList.add('light-mode'),
-        onLeaveBack: () => document.body.classList.remove('light-mode'),
+        start: "top 50%", end: "bottom 50%",
+        onEnter: () => document.body.classList.add("light-mode"),
+        onLeave: () => document.body.classList.remove("light-mode"),
+        onEnterBack: () => document.body.classList.add("light-mode"),
+        onLeaveBack: () => document.body.classList.remove("light-mode"),
       });
     }
 
@@ -290,10 +303,46 @@ function initScroll() {
     }
   });
 
-  gsap.to(".leaf-shape", { y: -30, rotation: 15, duration: 4, repeat: -1, yoyo: true, ease: "sine.inOut", stagger: 0.5 });
+  gsap.to(".leaf-shape", {
+    y: -30, rotation: 15, duration: 4,
+    repeat: -1, yoyo: true, ease: "sine.inOut", stagger: 0.5
+  });
 }
 
-// â”€â”€â”€ INIT â”€â”€â”€
+// ÄÄÄ VIEW TRANSITION API - COMPANY CARD NAVIGATION ÄÄÄ
+// Each .group-card with a data-href navigates to a company sub-page.
+// If the browser supports View Transitions, the card morphs into the new page.
+// Falls back to a standard navigation if not supported.
+function initCompanyNavigation() {
+  document.querySelectorAll(".group-card[data-href]").forEach(card => {
+    card.addEventListener("click", (e) => {
+      e.preventDefault();
+      const href = card.getAttribute("data-href");
+      const company = card.getAttribute("data-company");
+
+      // Give this specific card a named view-transition so it morphs into the page hero
+      card.style.viewTransitionName = "company-hero";
+
+      if (!document.startViewTransition) {
+        // Fallback: no View Transition support
+        window.location.href = href;
+        return;
+      }
+
+      // Forward transition: card expands into new page
+      const transition = document.startViewTransition(() => {
+        window.location.href = href;
+      });
+
+      // Clean up the name after the transition is captured
+      transition.ready.catch(() => {
+        card.style.viewTransitionName = "";
+      });
+    });
+  });
+}
+
+// ÄÄÄ INIT ÄÄÄ
 window.addEventListener("DOMContentLoaded", () => {
   initLoader();
   initCursor();
@@ -301,4 +350,5 @@ window.addEventListener("DOMContentLoaded", () => {
   initHorizontal();
   initWiper();
   initScroll();
+  initCompanyNavigation();
 });

@@ -1,0 +1,452 @@
+/* ��� company-style.css - shared styles for all company sub-pages ��� */
+
+:root {
+  --bg-primary: #0a0a0c;
+  --text-primary: #fcfaf2;
+  --bg-secondary: #111114;
+  --accent: #f26522;
+  --accent-alt: #d62b1f;
+  --yellow: #ffd200;
+  --white: #fcfaf2;
+  --ivory: #fff8f0;
+  --ink: #0a0a0c;
+  --muted: rgba(252, 250, 242, 0.65);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  width: 100%;
+}
+
+body {
+  font-family: 'Barlow', sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  overflow-x: hidden;
+}
+
+/* ��� VIEW TRANSITIONS (mirrored from main style.css) ��� */
+@keyframes vt-slide-out-left {
+  to {
+    transform: translateX(-8%) scale(0.96);
+    opacity: 0;
+  }
+}
+
+@keyframes vt-slide-in-right {
+  from {
+    transform: translateX(6%);
+    opacity: 0;
+  }
+}
+
+@keyframes vt-slide-out-right {
+  to {
+    transform: translateX(8%) scale(0.96);
+    opacity: 0;
+  }
+}
+
+@keyframes vt-slide-in-left {
+  from {
+    transform: translateX(-6%);
+    opacity: 0;
+  }
+}
+
+/* Default (forward) transition on company pages is the REVERSE direction because we're
+   navigating "back" from index  company = forward, company  index = back */
+::view-transition-old(root) {
+  animation: 420ms cubic-bezier(0.4, 0, 0.2, 1) both vt-slide-out-right;
+}
+
+::view-transition-new(root) {
+  animation: 420ms cubic-bezier(0.4, 0, 0.2, 1) both vt-slide-in-left;
+}
+
+/* Named hero: the hero section morphs back into the card on index */
+::view-transition-old(company-hero) {
+  animation: 500ms ease both fade-and-scale-out;
+}
+
+::view-transition-new(company-hero) {
+  animation: 500ms ease both fade-and-scale-in;
+}
+
+@keyframes fade-and-scale-out {
+  to {
+    opacity: 0;
+    transform: scale(1.08);
+  }
+}
+
+@keyframes fade-and-scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+}
+
+/* ��� COMPANY NAV ��� */
+.company-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.6rem 4rem;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7) 0%, transparent 100%);
+}
+
+.back-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.8rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--white);
+  text-decoration: none;
+  cursor: pointer;
+  background: none;
+  border: none;
+  opacity: 0.75;
+  transition: opacity 0.2s ease, gap 0.2s ease;
+}
+
+.back-btn:hover {
+  opacity: 1;
+  gap: 0.9rem;
+}
+
+.back-btn .arrow {
+  font-size: 1rem;
+  transition: transform 0.2s ease;
+}
+
+.back-btn:hover .arrow {
+  transform: translateX(-3px);
+}
+
+.nav-logo-text {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: var(--white);
+  text-decoration: none;
+  letter-spacing: 0.05em;
+}
+
+/* ��� COMPANY HERO ��� */
+.company-hero {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: flex-end;
+  padding: 0 6rem 8vh;
+  overflow: hidden;
+  /* Named view-transition: this element morphs to/from the group-card */
+  view-transition-name: company-hero;
+}
+
+.company-hero-bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  z-index: 0;
+}
+
+.company-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top,
+      rgba(0, 0, 0, 0.92) 0%,
+      rgba(0, 0, 0, 0.4) 50%,
+      rgba(0, 0, 0, 0.55) 100%);
+  z-index: 1;
+}
+
+.company-hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 900px;
+}
+
+.company-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.8rem;
+  letter-spacing: 0.4em;
+  color: var(--accent);
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
+  opacity: 0.8;
+}
+
+.company-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: clamp(3rem, 7vw, 6.5rem);
+  font-weight: 900;
+  text-transform: uppercase;
+  line-height: 0.95;
+  margin-bottom: 2rem;
+}
+
+.company-tagline {
+  font-family: 'Barlow', sans-serif;
+  font-size: 1.2rem;
+  line-height: 1.7;
+  color: var(--muted);
+  max-width: 600px;
+}
+
+/* ��� COMPANY BODY SECTIONS ��� */
+.company-section {
+  padding: 10vh 6rem;
+  max-width: 1300px;
+  margin: 0 auto;
+}
+
+.company-section+.company-section {
+  padding-top: 0;
+}
+
+.section-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 1.5rem;
+}
+
+.section-heading {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  font-weight: 900;
+  text-transform: uppercase;
+  line-height: 1;
+  margin-bottom: 2rem;
+}
+
+.section-body p {
+  font-size: 1.1rem;
+  line-height: 1.85;
+  color: var(--muted);
+  margin-bottom: 1.5rem;
+  max-width: 780px;
+}
+
+/* ��� TWO-COLUMN GRID ��� */
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6rem;
+  align-items: start;
+  margin-top: 2rem;
+}
+
+/* ��� STAT STRIP ��� */
+.stat-strip {
+  display: flex;
+  gap: 0;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  overflow: hidden;
+  margin: 4rem 0;
+}
+
+.strip-stat {
+  flex: 1;
+  padding: 2.5rem 2rem;
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  text-align: center;
+}
+
+.strip-stat:last-child {
+  border-right: none;
+}
+
+.strip-val {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 3rem;
+  font-weight: 900;
+  color: var(--accent);
+  line-height: 1;
+}
+
+.strip-key {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: 0.5rem;
+}
+
+/* ��� DIVIDER ��� */
+.divider {
+  width: 100%;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.07);
+  margin: 6rem 0;
+}
+
+/* ��� OTHER COMPANIES STRIP ��� */
+.other-companies {
+  padding: 8vh 6rem;
+  background: rgba(255, 255, 255, 0.02);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.other-companies-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 3rem;
+}
+
+.sibling-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.sibling-link {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  text-decoration: none;
+  padding: 0.6rem 1.4rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
+  cursor: pointer;
+}
+
+.sibling-link:hover,
+.sibling-link.active {
+  color: var(--white);
+  border-color: var(--accent);
+  background: rgba(242, 101, 34, 0.08);
+}
+
+/* ��� FOOTER ��� */
+.company-footer {
+  padding: 4vh 6rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+/* ��� CURSOR ��� */
+.cursor-trail {
+  position: fixed;
+  width: 16px;
+  height: 16px;
+  background: var(--accent);
+  border-radius: 2px;
+  transform: translate(-50%, -50%) rotate(45deg);
+  pointer-events: none;
+  z-index: 3000;
+  opacity: 0;
+  mix-blend-mode: difference;
+}
+
+/* ��� ANIMATE IN CLASSES ��� */
+/* Only elements BELOW the fold get the hidden-then-reveal treatment.
+   Hero content (.company-hero *) is always visible immediately. */
+.anim {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.anim.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Hero content is above the fold - never hide it */
+.company-hero .anim {
+  opacity: 0;
+  transform: translateY(30px);
+  animation: hero-reveal 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.company-hero .anim:nth-child(1) {
+  animation-delay: 0.1s;
+}
+
+.company-hero .anim:nth-child(2) {
+  animation-delay: 0.25s;
+}
+
+.company-hero .anim:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes hero-reveal {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ��� RESPONSIVE ��� */
+@media (max-width: 900px) {
+
+  .company-hero,
+  .company-section,
+  .other-companies,
+  .company-footer {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+
+  .company-nav {
+    padding: 1.2rem 2rem;
+  }
+
+  .two-col {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+
+  .stat-strip {
+    flex-direction: column;
+  }
+
+  .strip-stat {
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .strip-stat:last-child {
+    border-bottom: none;
+  }
+}

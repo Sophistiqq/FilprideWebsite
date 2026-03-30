@@ -50,7 +50,79 @@ body.no-scroll {
   overflow: hidden;
 }
 
-/* ─── DYNAMIC BACKGROUND ─── */
+/* ��� VIEW TRANSITION API ��� */
+/* Forward: index  company page (card expands right) */
+@keyframes vt-slide-out-left {
+  to {
+    transform: translateX(-8%) scale(0.96);
+    opacity: 0;
+  }
+}
+
+@keyframes vt-slide-in-right {
+  from {
+    transform: translateX(6%);
+    opacity: 0;
+  }
+}
+
+/* Back: company  index (reverse direction) */
+@keyframes vt-slide-out-right {
+  to {
+    transform: translateX(8%) scale(0.96);
+    opacity: 0;
+  }
+}
+
+@keyframes vt-slide-in-left {
+  from {
+    transform: translateX(-6%);
+    opacity: 0;
+  }
+}
+
+/* Default forward transition */
+::view-transition-old(root) {
+  animation: 420ms cubic-bezier(0.4, 0, 0.2, 1) both vt-slide-out-left;
+}
+
+::view-transition-new(root) {
+  animation: 420ms cubic-bezier(0.4, 0, 0.2, 1) both vt-slide-in-right;
+}
+
+/* Back transition - applied when html.back-transition class is set by company.js */
+html.back-transition::view-transition-old(root) {
+  animation: 420ms cubic-bezier(0.4, 0, 0.2, 1) both vt-slide-out-right;
+}
+
+html.back-transition::view-transition-new(root) {
+  animation: 420ms cubic-bezier(0.4, 0, 0.2, 1) both vt-slide-in-left;
+}
+
+/* Named hero morph: the clicked card morphs into the company page hero */
+::view-transition-old(company-hero) {
+  animation: 500ms cubic-bezier(0.4, 0, 0.2, 1) both fade-and-scale-out;
+}
+
+::view-transition-new(company-hero) {
+  animation: 500ms cubic-bezier(0.4, 0, 0.2, 1) both fade-and-scale-in;
+}
+
+@keyframes fade-and-scale-out {
+  to {
+    opacity: 0;
+    transform: scale(1.08);
+  }
+}
+
+@keyframes fade-and-scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+}
+
+/* ��� DYNAMIC BACKGROUND ��� */
 .bg-wrapper {
   position: fixed;
   inset: 0;
@@ -66,7 +138,6 @@ body.no-scroll {
   background-position: center;
   opacity: 0;
   transition: opacity 1.5s ease-in-out;
-  /* Standardized Slow Transition */
 }
 
 .bg-slide.active {
@@ -76,11 +147,14 @@ body.no-scroll {
 .bg-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.3) 50%, rgba(0, 0, 0, 0.85) 100%);
+  background: linear-gradient(to bottom,
+      rgba(0, 0, 0, 0.85) 0%,
+      rgba(0, 0, 0, 0.3) 50%,
+      rgba(0, 0, 0, 0.85) 100%);
   z-index: 1;
 }
 
-/* ─── LOADER ─── */
+/* ��� LOADER ��� */
 .loader-wrapper {
   position: fixed;
   inset: 0;
@@ -113,7 +187,7 @@ body.no-scroll {
   background: var(--accent);
 }
 
-/* ─── CURTAIN ─── */
+/* ��� CURTAIN ��� */
 .curtain-reveal {
   position: fixed;
   inset: 0;
@@ -154,7 +228,7 @@ body.no-scroll {
   opacity: 0;
 }
 
-/* ─── CUSTOM CURSOR ─── */
+/* ��� CUSTOM CURSOR ��� */
 .cursor-trail {
   position: fixed;
   width: 16px;
@@ -168,7 +242,7 @@ body.no-scroll {
   mix-blend-mode: difference;
 }
 
-/* ─── NAV ─── */
+/* ��� NAV ��� */
 .glass-nav {
   position: fixed;
   top: 0;
@@ -199,7 +273,7 @@ body.no-scroll {
   width: 0%;
 }
 
-/* ─── PANELS ─── */
+/* ��� PANELS ��� */
 .panel {
   width: 100%;
   min-height: 100vh;
@@ -216,7 +290,7 @@ body.no-scroll {
   z-index: 2;
 }
 
-/* ─── TYPOGRAPHY ─── */
+/* ��� TYPOGRAPHY ��� */
 .section-tag {
   font-family: 'DM Mono', monospace;
   font-size: 0.8rem;
@@ -266,7 +340,7 @@ body.no-scroll {
   margin-bottom: 1.5rem;
 }
 
-/* ─── HORIZONTAL SCROLL ─── */
+/* ��� HORIZONTAL SCROLL ��� */
 .horizontal-panel {
   height: 100vh;
   overflow: hidden;
@@ -292,14 +366,14 @@ body.no-scroll {
   padding-right: 40vw;
 }
 
-/* ─── GREEN PANEL TEXT OVERRIDE ─── */
+/* ��� GREEN PANEL TEXT OVERRIDE ��� */
 .green-panel .big-text,
 .green-panel .panel-body p,
 .green-panel .section-tag {
   color: var(--white) !important;
 }
 
-/* ─── LEGACY STAT ITEMS (HORIZONTAL WITH CONNECTORS) ─── */
+/* ��� STAT ITEMS ��� */
 .panel-stats {
   display: flex;
   align-items: center;
@@ -369,12 +443,10 @@ body.no-scroll {
   letter-spacing: 0.25em;
 }
 
-/* ─── GROUP CARDS (REFINED SIZE) ─── */
+/* ��� GROUP CARDS ��� */
 .group-card {
   min-width: 420px;
-  /* Slightly reduced */
   height: 480px;
-  /* Slightly reduced */
   margin-right: 3rem;
   padding: 4rem 3rem;
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -385,6 +457,7 @@ body.no-scroll {
   overflow: hidden;
   background: rgba(10, 10, 12, 0.85);
   transition: border-color 0.4s, opacity 0.4s;
+  cursor: pointer;
 }
 
 .group-card-bg {
@@ -394,21 +467,22 @@ body.no-scroll {
   background-position: center;
   z-index: 0;
   filter: blur(4px);
-  /* Initial Blur */
   transition: transform 1.2s cubic-bezier(0.165, 0.84, 0.44, 1), filter 0.6s ease;
 }
 
 .group-card-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.3) 50%, rgba(0, 0, 0, 0.7) 100%);
+  background: linear-gradient(to top,
+      rgba(0, 0, 0, 0.95) 0%,
+      rgba(0, 0, 0, 0.3) 50%,
+      rgba(0, 0, 0, 0.7) 100%);
   z-index: 1;
 }
 
 .group-card:hover .group-card-bg {
   transform: scale(1.15);
   filter: blur(0px);
-  /* Reduce blur on hover */
 }
 
 .group-card:hover {
@@ -430,7 +504,41 @@ body.no-scroll {
   line-height: 1.1;
 }
 
-/* ─── USA88 (RETAIL) GIANT WIPER ─── */
+.group-card p {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--muted);
+  margin-bottom: 1.5rem;
+}
+
+/* "View Company " CTA inside each card */
+.card-cta {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--accent);
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.group-card:hover .card-cta {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.card-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.3em;
+  color: var(--accent);
+  margin-bottom: 1.5rem;
+  opacity: 0.7;
+}
+
+/* ��� USA88 / WIPER ��� */
 .brand-panel {
   padding: 20vh 6rem;
   background: var(--bg-primary);
@@ -441,21 +549,16 @@ body.no-scroll {
 .wiper-overlay {
   position: absolute;
   top: -100vh;
-  /* Shift up to cover */
   left: -100vw;
-  /* Shift left to cover */
   width: 300vw;
-  /* Massively oversized */
   height: 300vh;
-  /* Massively oversized */
   background: var(--accent);
   z-index: 10;
   transform-origin: 50% 100%;
-  /* Pivot point below screen */
   transform: rotate(0deg);
 }
 
-/* ─── MILESTONES (HOVER REVEAL) ─── */
+/* ��� MILESTONES ��� */
 .milestone-card {
   min-width: 550px;
   height: 550px;
@@ -482,10 +585,9 @@ body.no-scroll {
 
 .milestone-card:hover .milestone-year {
   opacity: 0.9;
-  /* More visible on hover */
 }
 
-/* ─── FOOTER ─── */
+/* ��� FOOTER ��� */
 .footer-expanded {
   display: grid;
   grid-template-columns: 1.2fr 1.5fr 1fr;
@@ -503,7 +605,7 @@ body.no-scroll {
   text-transform: uppercase;
 }
 
-/* ─── RESPONSIVE ─── */
+/* ��� RESPONSIVE ��� */
 @media (max-width: 1100px) {
 
   .brand-main-grid,
@@ -530,7 +632,7 @@ body.no-scroll {
   }
 
   .stat-item:not(:last-child)::after {
-    content: "○";
+    content: "?";
     display: block;
     margin-top: 0.5rem;
     text-align: center;
