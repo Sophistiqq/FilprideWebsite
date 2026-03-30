@@ -1,8 +1,6 @@
 // company.js - shared script for all company sub-pages
 
 // ÄÄÄ BACK NAVIGATION with View Transition API ÄÄÄ
-// Adds the .back-transition class to <html> so the main style.css
-// can pick the reverse animation direction (rightleft instead of leftright).
 function initBackNavigation() {
   const backBtn = document.querySelector(".back-btn");
   if (!backBtn) return;
@@ -11,8 +9,8 @@ function initBackNavigation() {
     e.preventDefault();
     const href = backBtn.getAttribute("data-href") || "../index.html";
 
-    // Signal to the index page's CSS that this is a "back" transition
-    document.documentElement.classList.add("back-transition");
+    // Remove sibling transition tag if it was previously set
+    document.documentElement.removeAttribute("data-transition");
 
     if (!document.startViewTransition) {
       window.location.href = href;
@@ -25,22 +23,51 @@ function initBackNavigation() {
   });
 }
 
-// ÄÄÄ SIBLING COMPANY LINKS ÄÄÄ
-// Navigate to another company page with a neutral horizontal transition.
+// ÄÄÄ SIBLING COMPANY NAVIGATION ÄÄÄ
+// Unique vertical-wipe transition with a big company-number flash overlay.
 function initSiblingNavigation() {
   document.querySelectorAll(".sibling-link[data-href]").forEach(link => {
     link.addEventListener("click", (e) => {
       e.preventDefault();
       const href = link.getAttribute("data-href");
 
+      // Derive the target company number from the href (e.g. "mobility-group.html"  02)
+      const slugToNum = {
+        "filpride-resources.html": "01",
+        "mobility-group.html": "02",
+        "mcy-container.html": "03",
+        "syvill.html": "04",
+        "bienes-de-oro.html": "05",
+        "malayan-maritime.html": "06",
+        "barge.html": "07",
+        "vosa.html": "08",
+      };
+      const num = slugToNum[href] || "-";
+
+      // Inject the number flash overlay into the DOM
+      const flash = document.createElement("div");
+      flash.className = "vt-number-flash";
+      flash.innerHTML = `<span>${num}</span>`;
+      document.body.appendChild(flash);
+
+      // Remove it after the animation completes
+      flash.addEventListener("animationend", () => flash.remove());
+
       if (!document.startViewTransition) {
-        window.location.href = href;
+        // Fallback - wait a beat for the flash to show, then navigate
+        setTimeout(() => { window.location.href = href; }, 2000);
         return;
       }
 
-      document.startViewTransition(() => {
-        window.location.href = href;
-      });
+      // Tag the html element so CSS picks the sibling keyframes
+      document.documentElement.setAttribute("data-transition", "sibling");
+
+      // Small delay lets the flash overlay paint before the VT snapshot
+      setTimeout(() => {
+        document.startViewTransition(() => {
+          window.location.href = href;
+        });
+      }, 500);
     });
   });
 }

@@ -33,25 +33,20 @@ body {
   overflow-x: hidden;
 }
 
-/* ��� VIEW TRANSITIONS (mirrored from main style.css) ��� */
-@keyframes vt-slide-out-left {
-  to {
-    transform: translateX(-8%) scale(0.96);
-    opacity: 0;
-  }
-}
+/* ��������������������������������������������������
+   VIEW TRANSITION SYSTEM
+   Three distinct transitions:
+   1. back-transition  - company  index (slide right)
+   2. sibling-transition - company  company (vertical wipe)
+   3. default          - index  company (slide left, set in style.css)
+   �������������������������������������������������� */
 
-@keyframes vt-slide-in-right {
-  from {
-    transform: translateX(6%);
-    opacity: 0;
-  }
-}
-
+/* �� Shared keyframes �� */
 @keyframes vt-slide-out-right {
   to {
-    transform: translateX(8%) scale(0.96);
+    transform: translateX(6%) scale(0.97);
     opacity: 0;
+    filter: blur(2px);
   }
 }
 
@@ -59,39 +54,129 @@ body {
   from {
     transform: translateX(-6%);
     opacity: 0;
+    filter: blur(2px);
   }
 }
 
-/* Default (forward) transition on company pages is the REVERSE direction because we're
-   navigating "back" from index  company = forward, company  index = back */
+/* �� 1. BACK TRANSITION: company  index ��
+   The current page sweeps right and shrinks, index slides back in from the left. */
 ::view-transition-old(root) {
-  animation: 420ms cubic-bezier(0.4, 0, 0.2, 1) both vt-slide-out-right;
+  animation: 400ms cubic-bezier(0.76, 0, 0.24, 1) both vt-slide-out-right;
 }
 
 ::view-transition-new(root) {
-  animation: 420ms cubic-bezier(0.4, 0, 0.2, 1) both vt-slide-in-left;
+  animation: 400ms cubic-bezier(0.76, 0, 0.24, 1) both vt-slide-in-left;
 }
 
-/* Named hero: the hero section morphs back into the card on index */
-::view-transition-old(company-hero) {
-  animation: 500ms ease both fade-and-scale-out;
-}
+/* �� 2. SIBLING TRANSITION: company  company ��
+   A vertical reveal: old page collapses up, new page rises from below.
+   Applied when html has [data-transition="sibling"] */
 
-::view-transition-new(company-hero) {
-  animation: 500ms ease both fade-and-scale-in;
-}
+@keyframes sibling-out {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+    clip-path: inset(0 0 0% 0);
+  }
 
-@keyframes fade-and-scale-out {
-  to {
+  100% {
+    transform: translateY(-3%) scale(0.98);
     opacity: 0;
-    transform: scale(1.08);
+    clip-path: inset(0 0 100% 0);
   }
 }
 
-@keyframes fade-and-scale-in {
+@keyframes sibling-in {
+  0% {
+    transform: translateY(4%) scale(0.98);
+    opacity: 0;
+    clip-path: inset(100% 0 0 0);
+  }
+
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+html[data-transition="sibling"]::view-transition-old(root) {
+  animation: 500ms cubic-bezier(0.76, 0, 0.24, 1) both sibling-out;
+}
+
+html[data-transition="sibling"]::view-transition-new(root) {
+  animation: 500ms cubic-bezier(0.76, 0, 0.24, 1) both sibling-in;
+}
+
+/* Number flash overlay - a big accent-colored company number
+   slams in just before the new page appears */
+.vt-number-flash {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--accent);
+  pointer-events: none;
+  opacity: 0;
+  animation: number-flash-in 500ms cubic-bezier(0.76, 0, 0.24, 1) forwards;
+}
+
+.vt-number-flash span {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: clamp(12rem, 30vw, 22rem);
+  font-weight: 900;
+  color: rgba(0, 0, 0, 0.15);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  user-select: none;
+}
+
+@keyframes number-flash-in {
+  0% {
+    opacity: 0;
+    transform: scale(1.1);
+  }
+
+  35% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  70% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+}
+
+/* �� Named hero morph (index  company card expand) �� */
+::view-transition-old(company-hero) {
+  animation: 500ms cubic-bezier(0.76, 0, 0.24, 1) both hero-morph-out;
+}
+
+::view-transition-new(company-hero) {
+  animation: 500ms cubic-bezier(0.76, 0, 0.24, 1) both hero-morph-in;
+}
+
+@keyframes hero-morph-out {
+  to {
+    opacity: 0;
+    transform: scale(1.06);
+    filter: blur(4px);
+  }
+}
+
+@keyframes hero-morph-in {
   from {
     opacity: 0;
-    transform: scale(0.94);
+    transform: scale(0.96);
+    filter: blur(4px);
   }
 }
 
