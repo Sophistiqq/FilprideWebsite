@@ -121,7 +121,7 @@ function initCursor() {
     setY(pos.y);
   });
 
-  document.querySelectorAll("a, button, .bg-trigger, .cta-link, .loc-card, .milestone-card, .group-card")
+  document.querySelectorAll("a, button, .bg-trigger, .cta-link, .mega-item, .fade-trigger, .milestone-card, .group-card")
     .forEach(el => {
       el.addEventListener("mouseenter", () => gsap.to(trail, { scale: 3, rotation: 135, duration: 0.25 }));
       el.addEventListener("mouseleave", () => gsap.to(trail, { scale: 1, rotation: 45, duration: 0.25 }));
@@ -249,7 +249,7 @@ function initWiper() {
   const overlay = document.querySelector(".wiper-overlay");
   if (!overlay) return;
   gsap.fromTo(overlay, { rotate: 0 }, {
-    rotate: -120, ease: "power2.inOut",
+    rotate: -110, ease: "power2.inOut",
     scrollTrigger: { trigger: "#brand", start: "top bottom", end: "top 10%", scrub: 1.5 }
   });
 }
@@ -318,6 +318,21 @@ function initNavigation() {
 }
 
 
+// 9. MEGA LIST EXPANDER
+function initMegaList() {
+  const container = document.querySelector(".mega-list-container");
+  const fade = document.querySelector(".mega-list-fade");
+  if (!container || !fade) return;
+
+  fade.addEventListener("click", () => {
+    container.classList.add("is-expanded");
+    // Refresh ScrollTrigger so pinned sections know about the new document height
+    setTimeout(() => {
+      ScrollTrigger.refresh();
+    }, 1200);
+  });
+}
+
 // INIT
 window.addEventListener("DOMContentLoaded", () => {
   initLoader();
@@ -327,4 +342,5 @@ window.addEventListener("DOMContentLoaded", () => {
   initWiper();
   initScrollReveals();
   initNavigation();
+  initMegaList();
 });
