@@ -1,4 +1,9 @@
-/* ��� company-style.css - shared styles for all company sub-pages ��� */
+/* =============================================================
+   company-style.css  -  Filpride Company Sub-pages (shared)
+   View Transition section is the single source of truth for
+   all transitions that originate FROM a company page.
+   style.css handles transitions that originate FROM the index.
+   ============================================================= */
 
 :root {
   --bg-primary: #0a0a0c;
@@ -33,83 +38,96 @@ body {
   overflow-x: hidden;
 }
 
-/* ��������������������������������������������������
-   VIEW TRANSITION SYSTEM
-   Three distinct transitions:
-   1. back-transition  - company  index (slide right)
-   2. sibling-transition - company  company (vertical wipe)
-   3. default          - index  company (slide left, set in style.css)
-   �������������������������������������������������� */
 
-/* �� Shared keyframes �� */
-@keyframes vt-slide-out-right {
+/* �������������������������������������������
+   VIEW TRANSITION - COMPANY PAGES
+   Two transition types fire from company pages:
+
+   A) BACK  (company  index)
+      html[data-nav="back"] - cross-fade only.
+      No named element so it doesn't fight index.
+
+   B) SIBLING  (company  company)
+      html[data-nav="sibling"] - vertical wipe.
+      Distinct from back. No named element to
+      avoid compositor conflicts.
+
+   DEFAULT (no data-nav) - cross-fade fallback.
+   Named transition (company-hero) is NOT used
+   here; it only fires in style.css direction.
+   ������������������������������������������� */
+
+/* --- Keyframes --- */
+@keyframes vt-fade-out {
   to {
-    transform: translateX(6%) scale(0.97);
     opacity: 0;
-    filter: blur(2px);
   }
 }
 
-@keyframes vt-slide-in-left {
+@keyframes vt-fade-in {
   from {
-    transform: translateX(-6%);
     opacity: 0;
-    filter: blur(2px);
   }
 }
 
-/* �� 1. BACK TRANSITION: company  index ��
-   The current page sweeps right and shrinks, index slides back in from the left. */
+/* Vertical wipe out: page slides up and clips away */
+@keyframes vt-wipe-out {
+  from {
+    clip-path: inset(0 0 0 0);
+    opacity: 1;
+  }
+
+  to {
+    clip-path: inset(0 0 100% 0);
+    opacity: 1;
+  }
+}
+
+/* Vertical wipe in: new page rises from bottom */
+@keyframes vt-wipe-in {
+  from {
+    clip-path: inset(100% 0 0 0);
+    opacity: 1;
+  }
+
+  to {
+    clip-path: inset(0 0 0 0);
+    opacity: 1;
+  }
+}
+
+@view-transition {
+  navigation: auto;
+}
+
+/* --- Default (fallback): simple cross-fade --- */
 ::view-transition-old(root) {
-  animation: 400ms cubic-bezier(0.76, 0, 0.24, 1) both vt-slide-out-right;
+  animation: 300ms ease both vt-fade-out;
 }
 
 ::view-transition-new(root) {
-  animation: 400ms cubic-bezier(0.76, 0, 0.24, 1) both vt-slide-in-left;
+  animation: 300ms ease both vt-fade-in;
 }
 
-/* �� 2. SIBLING TRANSITION: company  company ��
-   A vertical reveal: old page collapses up, new page rises from below.
-   Applied when html has [data-transition="sibling"] */
-
-@keyframes sibling-out {
-  0% {
-    transform: translateY(0) scale(1);
-    opacity: 1;
-    clip-path: inset(0 0 0% 0);
-  }
-
-  100% {
-    transform: translateY(-3%) scale(0.98);
-    opacity: 0;
-    clip-path: inset(0 0 100% 0);
-  }
+/* --- A) Back transition: also cross-fade, same feel --- */
+html[data-nav="back"]::view-transition-old(root) {
+  animation: 300ms ease both vt-fade-out;
 }
 
-@keyframes sibling-in {
-  0% {
-    transform: translateY(4%) scale(0.98);
-    opacity: 0;
-    clip-path: inset(100% 0 0 0);
-  }
-
-  100% {
-    transform: translateY(0) scale(1);
-    opacity: 1;
-    clip-path: inset(0 0 0 0);
-  }
+html[data-nav="back"]::view-transition-new(root) {
+  animation: 300ms ease both vt-fade-in;
 }
 
-html[data-transition="sibling"]::view-transition-old(root) {
-  animation: 500ms cubic-bezier(0.76, 0, 0.24, 1) both sibling-out;
+/* --- B) Sibling transition: vertical wipe --- */
+html[data-nav="sibling"]::view-transition-old(root) {
+  animation: 480ms cubic-bezier(0.76, 0, 0.24, 1) both vt-wipe-out;
 }
 
-html[data-transition="sibling"]::view-transition-new(root) {
-  animation: 500ms cubic-bezier(0.76, 0, 0.24, 1) both sibling-in;
+html[data-nav="sibling"]::view-transition-new(root) {
+  animation: 480ms cubic-bezier(0.76, 0, 0.24, 1) both vt-wipe-in;
 }
 
-/* Number flash overlay - a big accent-colored company number
-   slams in just before the new page appears */
+/* --- Number flash overlay (sibling only) --- */
 .vt-number-flash {
   position: fixed;
   inset: 0;
@@ -119,68 +137,23 @@ html[data-transition="sibling"]::view-transition-new(root) {
   justify-content: center;
   background: var(--accent);
   pointer-events: none;
-  opacity: 0;
-  animation: number-flash-in 500ms cubic-bezier(0.76, 0, 0.24, 1) forwards;
+  transition: opacity 0.15s ease;
 }
 
 .vt-number-flash span {
   font-family: 'Barlow Condensed', sans-serif;
-  font-size: clamp(12rem, 30vw, 22rem);
+  font-size: clamp(10rem, 28vw, 20rem);
   font-weight: 900;
-  color: rgba(0, 0, 0, 0.15);
+  color: rgba(0, 0, 0, 0.12);
   line-height: 1;
   letter-spacing: -0.04em;
   user-select: none;
 }
 
-@keyframes number-flash-in {
-  0% {
-    opacity: 0;
-    transform: scale(1.1);
-  }
 
-  35% {
-    opacity: 1;
-    transform: scale(1);
-  }
-
-  70% {
-    opacity: 1;
-    transform: scale(1);
-  }
-
-  100% {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-}
-
-/* �� Named hero morph (index  company card expand) �� */
-::view-transition-old(company-hero) {
-  animation: 500ms cubic-bezier(0.76, 0, 0.24, 1) both hero-morph-out;
-}
-
-::view-transition-new(company-hero) {
-  animation: 500ms cubic-bezier(0.76, 0, 0.24, 1) both hero-morph-in;
-}
-
-@keyframes hero-morph-out {
-  to {
-    opacity: 0;
-    transform: scale(1.06);
-    filter: blur(4px);
-  }
-}
-
-@keyframes hero-morph-in {
-  from {
-    opacity: 0;
-    transform: scale(0.96);
-    filter: blur(4px);
-  }
-}
-
-/* ��� COMPANY NAV ��� */
+/* �������������������������������������������
+   COMPANY NAV
+   ������������������������������������������� */
 .company-nav {
   position: fixed;
   top: 0;
@@ -208,7 +181,7 @@ html[data-transition="sibling"]::view-transition-new(root) {
   background: none;
   border: none;
   opacity: 0.75;
-  transition: opacity 0.2s ease, gap 0.2s ease;
+  transition: opacity 0.2s, gap 0.2s;
 }
 
 .back-btn:hover {
@@ -218,7 +191,7 @@ html[data-transition="sibling"]::view-transition-new(root) {
 
 .back-btn .arrow {
   font-size: 1rem;
-  transition: transform 0.2s ease;
+  transition: transform 0.2s;
 }
 
 .back-btn:hover .arrow {
@@ -234,7 +207,15 @@ html[data-transition="sibling"]::view-transition-new(root) {
   letter-spacing: 0.05em;
 }
 
-/* ��� COMPANY HERO ��� */
+
+/* �������������������������������������������
+   COMPANY HERO
+   view-transition-name is set via inline style
+   on the <section> tag in each HTML file.
+   It is intentionally NOT set in CSS here to
+   avoid it being active during sibling/back
+   transitions (which don't use it).
+   ������������������������������������������� */
 .company-hero {
   position: relative;
   width: 100%;
@@ -243,8 +224,6 @@ html[data-transition="sibling"]::view-transition-new(root) {
   align-items: flex-end;
   padding: 0 6rem 8vh;
   overflow: hidden;
-  /* Named view-transition: this element morphs to/from the group-card */
-  view-transition-name: company-hero;
 }
 
 .company-hero-bg {
@@ -253,16 +232,15 @@ html[data-transition="sibling"]::view-transition-new(root) {
   background-size: cover;
   background-position: center;
   z-index: 0;
+  will-change: transform;
 }
 
 .company-hero-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top,
-      rgba(0, 0, 0, 0.92) 0%,
-      rgba(0, 0, 0, 0.4) 50%,
-      rgba(0, 0, 0, 0.55) 100%);
   z-index: 1;
+  background: linear-gradient(to top,
+      rgba(0, 0, 0, 0.92) 0%, rgba(0, 0, 0, 0.4) 50%, rgba(0, 0, 0, 0.55) 100%);
 }
 
 .company-hero-content {
@@ -298,7 +276,10 @@ html[data-transition="sibling"]::view-transition-new(root) {
   max-width: 600px;
 }
 
-/* ��� COMPANY BODY SECTIONS ��� */
+
+/* �������������������������������������������
+   BODY SECTIONS
+   ������������������������������������������� */
 .company-section {
   padding: 10vh 6rem;
   max-width: 1300px;
@@ -335,7 +316,6 @@ html[data-transition="sibling"]::view-transition-new(root) {
   max-width: 780px;
 }
 
-/* ��� TWO-COLUMN GRID ��� */
 .two-col {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -344,10 +324,12 @@ html[data-transition="sibling"]::view-transition-new(root) {
   margin-top: 2rem;
 }
 
-/* ��� STAT STRIP ��� */
+
+/* �������������������������������������������
+   STAT STRIP
+   ������������������������������������������� */
 .stat-strip {
   display: flex;
-  gap: 0;
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 6px;
   overflow: hidden;
@@ -382,7 +364,6 @@ html[data-transition="sibling"]::view-transition-new(root) {
   margin-top: 0.5rem;
 }
 
-/* ��� DIVIDER ��� */
 .divider {
   width: 100%;
   height: 1px;
@@ -390,7 +371,10 @@ html[data-transition="sibling"]::view-transition-new(root) {
   margin: 6rem 0;
 }
 
-/* ��� OTHER COMPANIES STRIP ��� */
+
+/* �������������������������������������������
+   SIBLING COMPANY STRIP
+   ������������������������������������������� */
 .other-companies {
   padding: 8vh 6rem;
   background: rgba(255, 255, 255, 0.02);
@@ -423,8 +407,8 @@ html[data-transition="sibling"]::view-transition-new(root) {
   padding: 0.6rem 1.4rem;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 4px;
-  transition: color 0.2s, border-color 0.2s, background 0.2s;
   cursor: pointer;
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
 }
 
 .sibling-link:hover,
@@ -434,7 +418,10 @@ html[data-transition="sibling"]::view-transition-new(root) {
   background: rgba(242, 101, 34, 0.08);
 }
 
-/* ��� FOOTER ��� */
+
+/* �������������������������������������������
+   FOOTER
+   ������������������������������������������� */
 .company-footer {
   padding: 4vh 6rem;
   display: flex;
@@ -448,7 +435,10 @@ html[data-transition="sibling"]::view-transition-new(root) {
   text-transform: uppercase;
 }
 
-/* ��� CURSOR ��� */
+
+/* �������������������������������������������
+   CURSOR
+   ������������������������������������������� */
 .cursor-trail {
   position: fixed;
   width: 16px;
@@ -462,13 +452,17 @@ html[data-transition="sibling"]::view-transition-new(root) {
   mix-blend-mode: difference;
 }
 
-/* ��� ANIMATE IN CLASSES ��� */
-/* Only elements BELOW the fold get the hidden-then-reveal treatment.
-   Hero content (.company-hero *) is always visible immediately. */
+
+/* �������������������������������������������
+   SCROLL REVEAL
+   Hero .anim uses CSS keyframe (always fires).
+   All other .anim elements start hidden and
+   are revealed by IntersectionObserver in JS.
+   ������������������������������������������� */
 .anim {
   opacity: 0;
-  transform: translateY(40px);
-  transition: opacity 0.8s ease, transform 0.8s ease;
+  transform: translateY(36px);
+  transition: opacity 0.75s ease, transform 0.75s ease;
 }
 
 .anim.visible {
@@ -476,23 +470,25 @@ html[data-transition="sibling"]::view-transition-new(root) {
   transform: translateY(0);
 }
 
-/* Hero content is above the fold - never hide it */
+/* Hero elements: CSS keyframe, bypass observer */
 .company-hero .anim {
   opacity: 0;
-  transform: translateY(30px);
-  animation: hero-reveal 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  transform: translateY(28px);
+  animation: hero-reveal 0.85s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  transition: none;
+  /* prevent transition fighting animation */
 }
 
-.company-hero .anim:nth-child(1) {
-  animation-delay: 0.1s;
+.company-hero .company-num {
+  animation-delay: 0.15s;
 }
 
-.company-hero .anim:nth-child(2) {
-  animation-delay: 0.25s;
+.company-hero .company-title {
+  animation-delay: 0.3s;
 }
 
-.company-hero .anim:nth-child(3) {
-  animation-delay: 0.4s;
+.company-hero .company-tagline {
+  animation-delay: 0.45s;
 }
 
 @keyframes hero-reveal {
@@ -502,7 +498,10 @@ html[data-transition="sibling"]::view-transition-new(root) {
   }
 }
 
-/* ��� RESPONSIVE ��� */
+
+/* �������������������������������������������
+   RESPONSIVE
+   ������������������������������������������� */
 @media (max-width: 900px) {
 
   .company-hero,

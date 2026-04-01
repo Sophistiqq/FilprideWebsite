@@ -1,156 +1,175 @@
-// company.js - shared script for all company sub-pages
+/* =============================================================
+   company.js  -  Filpride Company Sub-pages (shared)
+   Architecture:
+     1. Navigation      (back + sibling, with distinct VT)
+     2. Cursor          (same diamond as index)
+     3. Scroll Reveal   (IntersectionObserver, hero excluded)
+     4. Hero Parallax
+   View Transition rules:
+     - back btn  - simple cross-fade (least jarring, feels like "back")
+     - sibling   - clip-path vertical wipe (distinct from back/forward)
+     - Named transition (company-hero) is DISABLED on company pages
+       to avoid fighting the sibling/back transitions.
+   ============================================================= */
 
-// ÄÄÄ BACK NAVIGATION with View Transition API ÄÄÄ
+
+// SLUG - NUMBER MAP
+// Single source of truth used by both the
+// sibling navigation and any future feature
+// that needs company ordering.
+const COMPANY_MAP = {
+  "filpride-resources.html": { num: "01", label: "Filpride Resources" },
+  "mobility-group.html": { num: "02", label: "Mobility Group" },
+  "mcy-container.html": { num: "03", label: "MCY Container" },
+  "syvill.html": { num: "04", label: "Syvill" },
+  "bienes-de-oro.html": { num: "05", label: "Bienes de Oro" },
+  "malayan-maritime.html": { num: "06", label: "Malayan Maritime" },
+  "barge.html": { num: "07", label: "Barge" },
+  "vosa.html": { num: "08", label: "Vosa" },
+};
+
+const supportsVT = typeof document.startViewTransition === "function";
+
+
+// 1a. BACK NAVIGATION  -  company  index
+// Transition: simple cross-fade.
+// Reasoning: the user is going "up" in
+// hierarchy. A cross-fade is fast, clean,
+// and doesn't fight the index loader state.
 function initBackNavigation() {
-  const backBtn = document.querySelector(".back-btn");
-  if (!backBtn) return;
+  const btn = document.querySelector(".back-btn");
+  if (!btn) return;
 
-  backBtn.addEventListener("click", (e) => {
+  btn.addEventListener("click", e => {
     e.preventDefault();
-    const href = backBtn.getAttribute("data-href") || "../index.html";
+    const href = btn.getAttribute("data-href") || "../index.html";
 
-    // Remove sibling transition tag if it was previously set
-    document.documentElement.removeAttribute("data-transition");
+    // Mark direction so index-side CSS can respond if needed
+    document.documentElement.setAttribute("data-nav", "back");
 
-    if (!document.startViewTransition) {
-      window.location.href = href;
-      return;
-    }
+    if (!supportsVT) { window.location.href = href; return; }
 
-    document.startViewTransition(() => {
-      window.location.href = href;
-    });
+    window.location.href = href;
   });
 }
 
-// ÄÄÄ SIBLING COMPANY NAVIGATION ÄÄÄ
-// Unique vertical-wipe transition with a big company-number flash overlay.
+
+// 1b. SIBLING NAVIGATION  -  company  company
+// Transition: vertical clip-path wipe.
+// The number flash overlay is injected and
+// hidden from the VT snapshot using a
+// visibility trick so it doesn't appear
+// in the "old page" screenshot.
 function initSiblingNavigation() {
   document.querySelectorAll(".sibling-link[data-href]").forEach(link => {
-    link.addEventListener("click", (e) => {
+    link.addEventListener("click", e => {
       e.preventDefault();
       const href = link.getAttribute("data-href");
+      const meta = COMPANY_MAP[href];
+      const num = meta ? meta.num : "-";
 
-      // Derive the target company number from the href (e.g. "mobility-group.html"  02)
-      const slugToNum = {
-        "filpride-resources.html": "01",
-        "mobility-group.html": "02",
-        "mcy-container.html": "03",
-        "syvill.html": "04",
-        "bienes-de-oro.html": "05",
-        "malayan-maritime.html": "06",
-        "barge.html": "07",
-        "vosa.html": "08",
-      };
-      const num = slugToNum[href] || "-";
-
-      // Inject the number flash overlay into the DOM
+      // Create the flash overlay but keep it invisible initially
+      // so the VT API snapshots a clean old-page state
       const flash = document.createElement("div");
       flash.className = "vt-number-flash";
+      flash.style.opacity = "0";          // invisible during snapshot
       flash.innerHTML = `<span>${num}</span>`;
       document.body.appendChild(flash);
 
-      // Remove it after the animation completes
-      flash.addEventListener("animationend", () => flash.remove());
+      // Tag html so CSS picks the sibling keyframes
+      document.documentElement.setAttribute("data-nav", "sibling");
 
-      if (!document.startViewTransition) {
-        // Fallback - wait a beat for the flash to show, then navigate
-        setTimeout(() => { window.location.href = href; }, 2000);
-        return;
-      }
-
-      // Tag the html element so CSS picks the sibling keyframes
-      document.documentElement.setAttribute("data-transition", "sibling");
-
-      // Small delay lets the flash overlay paint before the VT snapshot
+      // Flash overlay for native cross-document view transitions
+      flash.style.opacity = "1";
+      flash.style.transition = "opacity 0.1s";
+      
       setTimeout(() => {
-        document.startViewTransition(() => {
-          window.location.href = href;
-        });
-      }, 500);
+        window.location.href = href;
+      }, 30);
     });
   });
 }
 
-// ÄÄÄ CUSTOM CURSOR ÄÄÄ
+
+// 2. CURSOR
 function initCursor() {
   const trail = document.querySelector(".cursor-trail");
   if (!trail) return;
 
   const pos = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
   const mouse = { x: pos.x, y: pos.y };
-  const speed = 0.15;
 
-  // Lazy GSAP load (GSAP is included in the company pages via CDN)
-  const xSet = gsap.quickSetter(trail, "x", "px");
-  const ySet = gsap.quickSetter(trail, "y", "px");
+  const setX = gsap.quickSetter(trail, "x", "px");
+  const setY = gsap.quickSetter(trail, "y", "px");
 
-  window.addEventListener("mousemove", (e) => {
+  window.addEventListener("mousemove", e => {
     mouse.x = e.clientX;
     mouse.y = e.clientY;
-    trail.style.opacity = "1";
+    gsap.to(trail, { opacity: 1, duration: 0.4 });
   });
 
   gsap.ticker.add(() => {
-    const dt = 1.0 - Math.pow(1.0 - speed, gsap.ticker.deltaRatio());
+    const dt = 1 - Math.pow(0.85, gsap.ticker.deltaRatio());
     pos.x += (mouse.x - pos.x) * dt;
     pos.y += (mouse.y - pos.y) * dt;
-    xSet(pos.x);
-    ySet(pos.y);
+    setX(pos.x);
+    setY(pos.y);
   });
 
-  document.querySelectorAll("a, .back-btn, .sibling-link").forEach(el => {
-    el.addEventListener("mouseenter", () => gsap.to(trail, { scale: 3, rotation: 135, duration: 0.3 }));
-    el.addEventListener("mouseleave", () => gsap.to(trail, { scale: 1, rotation: 45, duration: 0.3 }));
+  document.querySelectorAll("a, button, .sibling-link, .back-btn").forEach(el => {
+    el.addEventListener("mouseenter", () => gsap.to(trail, { scale: 3, rotation: 135, duration: 0.25 }));
+    el.addEventListener("mouseleave", () => gsap.to(trail, { scale: 1, rotation: 45, duration: 0.25 }));
   });
 }
 
-// ÄÄÄ SCROLL REVEAL ÄÄÄ
-// Simple IntersectionObserver-based reveal for .anim elements.
-// Hero .anim elements are handled by CSS animation (always visible).
+
+// 3. SCROLL REVEAL
+//    Hero elements use CSS keyframe animation
+//   (always visible).Everything else is
+//    revealed by IntersectionObserver as it
+//    enters the viewport.
 function initScrollReveal() {
-  // Exclude hero children - they're revealed by CSS keyframe animation
-  const els = Array.from(document.querySelectorAll(".anim")).filter(
-    el => !el.closest(".company-hero")
-  );
+  const els = Array.from(document.querySelectorAll(".anim"))
+    .filter(el => !el.closest(".company-hero"));
+
   if (!els.length) return;
 
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add("visible");
-        observer.unobserve(entry.target);
-      }
+      if (!entry.isIntersecting) return;
+      entry.target.classList.add("visible");
+      observer.unobserve(entry.target);
     });
-  }, {
-    threshold: 0.05,      // trigger as soon as 5% is visible
-    rootMargin: "0px 0px -40px 0px"
-  });
+  }, { threshold: 0.06, rootMargin: "0px 0px -30px 0px" });
 
   els.forEach((el, i) => {
-    el.style.transitionDelay = `${Math.min(i * 0.07, 0.4)}s`;
+    // Cap stagger at 0.35s so deep sections don't feel delayed
+    el.style.transitionDelay = `${Math.min(i * 0.06, 0.35)}s`;
     observer.observe(el);
   });
 
-  // Hard fallback: if anything is still invisible after 2s, force-reveal it.
-  // Catches cases where the observer never fires (e.g. cached page, instant scroll).
+  // Hard safety net - reveal everything after 1.8s regardless
   setTimeout(() => {
-    els.forEach(el => el.classList.add("visible"));
-  }, 2000);
+    els.forEach(el => {
+      el.style.transitionDelay = "0s";
+      el.classList.add("visible");
+    });
+  }, 1800);
 }
 
-// ÄÄÄ HERO PARALLAX ÄÄÄ
+
+// 4. HERO PARALLAX
 function initHeroParallax() {
   const bg = document.querySelector(".company-hero-bg");
   if (!bg) return;
 
   window.addEventListener("scroll", () => {
-    const y = window.scrollY;
-    bg.style.transform = `translateY(${y * 0.35}px)`;
+    bg.style.transform = `translateY(${window.scrollY * 0.3}px)`;
   }, { passive: true });
 }
 
-// ÄÄÄ INIT ÄÄÄ
+
+// INIT
 document.addEventListener("DOMContentLoaded", () => {
   initBackNavigation();
   initSiblingNavigation();
