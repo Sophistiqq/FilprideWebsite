@@ -279,6 +279,7 @@
    justify-content: center;
    position: relative;
    padding: 10vh 6rem;
+   transition: background-color 1s ease, background 1s ease, color 1s ease, border-color 1s ease;
  }
 
  .panel-content {
@@ -555,6 +556,7 @@
   font-size: 1.25rem;
   line-height: 1.8;
   color: var(--text-primary);
+  transition: color 1s ease;
 }
 
 .brand-intro p.lead {
@@ -593,8 +595,6 @@
   left: 0;
   width: 100%;
   height: 35vh;
-  /* Fades beautifully into the light-mode primary background color */
-  background: linear-gradient(to top, var(--bg-primary) 15%, rgba(252, 250, 242, 0) 100%);
   display: flex;
   align-items: flex-end;
   justify-content: center;
@@ -602,6 +602,36 @@
   z-index: 5;
   cursor: pointer;
   transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.mega-list-fade::before,
+.mega-list-fade::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  transition: opacity 1s ease;
+}
+
+/* Dark Mode Gradient Mask */
+.mega-list-fade::before {
+  background: linear-gradient(to top, #0a0a0c 15%, rgba(10, 10, 12, 0) 100%);
+  opacity: 1;
+}
+
+/* Light Mode Gradient Mask */
+.mega-list-fade::after {
+  background: linear-gradient(to top, #fcfaf2 15%, rgba(252, 250, 242, 0) 100%);
+  opacity: 0;
+}
+
+body.light-mode .mega-list-fade::before {
+  opacity: 0;
+}
+
+body.light-mode .mega-list-fade::after {
+  opacity: 1;
 }
 
 .mega-list-container.is-expanded .mega-list-fade {
@@ -724,33 +754,100 @@
  }
 
 
- /* MILESTONES */
- .milestone-card {
-   min-width: 550px;
-   height: 550px;
-   margin-right: 4rem;
-   padding: 5rem 4rem;
-   border-left: 6px solid var(--accent);
-   background: rgba(255, 255, 255, 0.02);
-   display: flex;
-   flex-direction: column;
-   justify-content: center;
-   cursor: pointer;
+ /* HISTORY TIMELINE */
+ .history-panel {
+   padding: 15vh 6vw;
+   background: var(--bg-primary);
+   min-height: 100vh;
  }
 
- .milestone-year {
+ .timeline-grid {
+   display: grid;
+   grid-template-columns: 4fr 6fr;
+   gap: 4rem;
+   margin-top: 10vh;
+   position: relative;
+ }
+
+ .timeline-left {
+   position: relative;
+ }
+
+ .sticky-year-container {
+   position: sticky;
+   top: 40vh;
+   display: flex;
+   align-items: center;
+ }
+
+ .massive-year {
    font-family: 'Barlow Condensed', sans-serif;
-   font-size: 7rem;
+   font-size: clamp(8rem, 16vw, 15rem);
    font-weight: 900;
    color: var(--accent);
-   line-height: 1;
-   margin-bottom: 2rem;
+   line-height: 0.8;
+   letter-spacing: -0.02em;
    opacity: 0.15;
    transition: opacity 0.4s ease;
  }
 
- .milestone-card:hover .milestone-year {
-   opacity: 0.9;
+ .timeline-right {
+   display: flex;
+   flex-direction: column;
+   padding-bottom: 20vh;
+ }
+
+ .timeline-event {
+   padding: 18vh 0;
+   border-left: 2px solid rgba(255, 255, 255, 0.05);
+   padding-left: 5rem;
+   position: relative;
+   opacity: 0.2;
+   transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+   transform: translateX(40px);
+ }
+
+ .timeline-event.is-active {
+   opacity: 1;
+   transform: translateX(0);
+   border-color: rgba(242, 101, 34, 0.5); /* Accent color transition */
+ }
+
+ .timeline-event::before {
+   content: '';
+   position: absolute;
+   top: 18vh;
+   left: -8px; /* Offset the 2px border and center a 14px dot */
+   width: 14px;
+   height: 14px;
+   background: var(--bg-primary);
+   border: 2px solid var(--accent);
+   border-radius: 50%;
+   transform: translateY(12px);
+   transition: all 0.6s ease;
+   z-index: 2;
+ }
+
+ .timeline-event.is-active::before {
+   background: var(--accent);
+   box-shadow: 0 0 20px var(--accent);
+ }
+
+ .event-title {
+   font-family: 'Barlow Condensed', sans-serif;
+   font-size: clamp(2.5rem, 4vw, 3.5rem);
+   font-weight: 800;
+   text-transform: uppercase;
+   margin-bottom: 1.5rem;
+   color: var(--white);
+   line-height: 1.1;
+ }
+
+ .event-desc {
+   font-size: 1.25rem;
+   line-height: 1.8;
+   color: var(--muted);
+   max-width: 600px;
  }
 
 
@@ -778,6 +875,34 @@
    .footer-expanded {
      grid-template-columns: 1fr;
      gap: 4rem;
+   }
+   
+   .timeline-grid {
+     grid-template-columns: 1fr;
+     gap: 2rem;
+     margin-top: 5vh;
+   }
+
+   .sticky-year-container {
+     position: static;
+     top: auto;
+   }
+
+   .massive-year {
+     font-size: clamp(6rem, 25vw, 15rem);
+     opacity: 0.25;
+   }
+
+   .timeline-right {
+     padding-bottom: 5vh;
+   }
+
+   .timeline-event {
+     padding: 8vh 0 8vh 3.5rem;
+   }
+
+   .timeline-event::before {
+     top: 8vh; /* Match the new padding */
    }
  }
 

@@ -114,7 +114,8 @@
       <div class="horizontal-wrapper">
 
         <!-- CARD 01: data-company used for view-transition-name, data-href for navigation -->
-        <div class="group-card bg-trigger" data-company="filpride-resources" data-href="companies/filpride-resources.html"
+        <div class="group-card bg-trigger" data-company="filpride-resources"
+          data-href="companies/filpride-resources.html"
           data-bg="https://images.unsplash.com/photo-1444676632488-26a136c45b9b?auto=format&fit=crop&q=80&w=1920">
           <div class="group-card-bg"
             style="background-image: url('https://images.unsplash.com/photo-1444676632488-26a136c45b9b?auto=format&fit=crop&q=80&w=800')">
@@ -253,15 +254,17 @@
           <h2 class="big-text animate-text">The USA88 Brand</h2>
         </div>
         <div class="brand-intro animate-text">
-          <p class="lead">USA88 is Filpride Energy Corp.'s consumer-facing retail fuel brand — a network of modern, full-service
+          <p class="lead">USA88 is Filpride Energy Corp.'s consumer-facing retail fuel brand — a network of modern,
+            full-service
             gasoline stations offering quality fuels to motorists across Metro Manila and nearby provinces.</p>
           <p>As part of the broader Villavicencio Group ecosystem — which includes Filoil, Flying V, and PetroGazz —
-            USA88 benefits from shared logistics, supply chain synergies, and the group's collective purchasing power.</p>
+            USA88 benefits from shared logistics, supply chain synergies, and the group's collective purchasing power.
+          </p>
         </div>
 
         <div class="location-expand animate-text">
           <div class="section-tag" style="margin-top: 6rem;">Station Locations</div>
-          
+
           <div class="mega-list-container">
             <ul class="mega-list">
               <li class="mega-item">
@@ -327,66 +330,76 @@
       </div>
     </section>
 
-    <!-- HISTORY PANEL (HORIZONTAL SCROLL) -->
-    <section class="panel horizontal-panel history-scroll" id="history">
-      <div class="panel-content sticky-content">
+    <!-- HISTORY PANEL (VERTICAL TIMELINE) -->
+    <section class="panel history-panel" id="history">
+      <div class="panel-content">
         <div class="section-tag animate-text">Company History</div>
-        <h2 class="big-text animate-text">Milestones & Achievements</h2>
-      </div>
-      <div class="horizontal-wrapper">
-        <div class="milestone-card">
-          <div class="milestone-year">1996</div>
-          <h3>Filpride Energy Corp. Founded</h3>
-          <p>Incorporated in the Philippines as an independent petroleum wholesale company under the Villavicencio
-            Group.</p>
-        </div>
-        <div class="milestone-card">
-          <div class="milestone-year">2002</div>
-          <h3>Insular Oil Corporation</h3>
-          <p>Established as a key terminal operations affiliate, anchoring petroleum storage and distribution in Davao
-            City.</p>
-        </div>
-        <div class="milestone-card">
-          <div class="milestone-year">2003</div>
-          <h3>USA88 Retail Launch</h3>
-          <p>Filpride Energy enters the retail fuel market with the USA88 brand, spearheading the station expansion
-            program.</p>
-        </div>
-        <div class="milestone-card">
-          <div class="milestone-year">2007</div>
-          <h3>Double-Hull Tankers</h3>
-          <p>The M/T Noble Job becomes the PH's first double-hulled white fuel tanker — setting new safety standards.
-          </p>
-        </div>
-        <div class="milestone-card">
-          <div class="milestone-year">2014</div>
-          <h3>Aggressive Retail Expansion</h3>
-          <p>Villavicencio Group targets 665 stations across all brands, anchoring the group's dominant retail presence.
-          </p>
-        </div>
-        <div class="milestone-card">
-          <div class="milestone-year">2016</div>
-          <h3>Filoil–Total JV</h3>
-          <p>Affiliate Filoil Energy and French multinational TotalEnergies form a joint venture to consolidate fuel
-            sales.</p>
-        </div>
-        <div class="milestone-card">
-          <div class="milestone-year">2021</div>
-          <h3>Vertical Integration</h3>
-          <p>Basic Energy Corp. acquires a 60% stake in Filoil Energy, deepening integration across the group's
-            portfolio.</p>
-        </div>
-        <div class="milestone-card">
-          <div class="milestone-year">2024</div>
-          <h3>PH Oil Acquisition</h3>
-          <p>Advanced negotiations to sell TotalEnergies' entire PH oil business to the Villavicencio Group — a landmark
-            deal.</p>
-        </div>
-        <div class="milestone-card">
-          <div class="milestone-year">Ongoing</div>
-          <h3>Green Energy Project</h3>
-          <p>Under USA88, Filpride partners with Basic Energy and TotalEnergies to solarize stations and integrate
-            e-buses.</p>
+        <h2 class="big-text animate-text" style="margin-bottom: 6rem;">Milestones & Achievements</h2>
+
+        <div class="timeline-grid">
+          <!-- LEFT: Sticky Massive Year -->
+          <div class="timeline-left">
+            <div class="sticky-year-container">
+              <div class="massive-year" id="active-year">1996</div>
+            </div>
+          </div>
+
+          <!-- RIGHT: Scrolling Events -->
+          <div class="timeline-right">
+            <article class="timeline-event" data-year="1996">
+              <h3 class="event-title">Filpride Energy Corp. Founded</h3>
+              <p class="event-desc">Incorporated in the Philippines as an independent petroleum wholesale company under
+                the Villavicencio Group.</p>
+            </article>
+
+            <article class="timeline-event" data-year="2002">
+              <h3 class="event-title">Insular Oil Corporation</h3>
+              <p class="event-desc">Established as a key terminal operations affiliate, anchoring petroleum storage and
+                distribution in Davao City.</p>
+            </article>
+
+            <article class="timeline-event" data-year="2003">
+              <h3 class="event-title">USA88 Retail Launch</h3>
+              <p class="event-desc">Filpride Energy enters the retail fuel market with the USA88 brand, spearheading the
+                station expansion program.</p>
+            </article>
+
+            <article class="timeline-event" data-year="2007">
+              <h3 class="event-title">Double-Hull Tankers</h3>
+              <p class="event-desc">The M/T Noble Job becomes the PH's first double-hulled white fuel tanker — setting
+                new safety standards.</p>
+            </article>
+
+            <article class="timeline-event" data-year="2014">
+              <h3 class="event-title">Aggressive Retail Expansion</h3>
+              <p class="event-desc">Villavicencio Group targets 665 stations across all brands, anchoring the group's
+                dominant retail presence.</p>
+            </article>
+
+            <article class="timeline-event" data-year="2016">
+              <h3 class="event-title">Filoil–Total JV</h3>
+              <p class="event-desc">Affiliate Filoil Energy and French multinational TotalEnergies form a joint venture
+                to consolidate fuel sales.</p>
+            </article>
+
+            <article class="timeline-event" data-year="2021">
+              <h3 class="event-title">Vertical Integration</h3>
+              <p class="event-desc">Basic Energy Corp. acquires a 60% stake in Filoil Energy, deepening integration
+                across the group's portfolio.</p>
+            </article>
+
+            <article class="timeline-event" data-year="2024">
+              <h3 class="event-title">PH Oil Acquisition</h3>
+              <p class="event-desc">Advanced negotiations to sell TotalEnergies' entire PH oil business to the
+                Villavicencio Group — a landmark deal.</p>
+            </article>
+
+            <article class="timeline-event" data-year="2026">
+              <h3 class="event-title">Green Energy Project</h3>
+              <p class="event-desc">Under USA88, Filpride partners with Basic Energy and TotalEnergies to solarize
+                stations and integrate e-buses.</p>
+            </article>
+          </div>
         </div>
       </div>
     </section>

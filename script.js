@@ -244,7 +244,44 @@ function initHorizontal() {
 }
 
 
-// 6. WIPER
+// 6. VERTICAL TIMELINE 
+function initVerticalTimeline() {
+  const events = gsap.utils.toArray(".timeline-event");
+  const activeYearEl = document.getElementById("active-year");
+  if (!events.length || !activeYearEl) return;
+
+  events.forEach((event, i) => {
+    ScrollTrigger.create({
+      trigger: event,
+      start: "top 60%", // Activate when event crosses this upper-middle threshold
+      end: "bottom 60%",
+      onEnter: () => activateEvent(event),
+      onEnterBack: () => activateEvent(event),
+    });
+  });
+
+  function activateEvent(el) {
+    events.forEach(e => e.classList.remove("is-active"));
+    el.classList.add("is-active");
+
+    const year = el.dataset.year;
+    if (activeYearEl.innerText !== year) {
+      // Smooth crossfade for massive year text
+      gsap.to(activeYearEl, {
+        opacity: 0,
+        duration: 0.2,
+        onComplete: () => {
+          activeYearEl.innerText = year;
+          gsap.to(activeYearEl, { opacity: 0.7, duration: 0.1 });
+        }
+      });
+    }
+  }
+
+  if (events[0]) activateEvent(events[0]);
+}
+
+// 7. WIPER
 function initWiper() {
   const overlay = document.querySelector(".wiper-overlay");
   if (!overlay) return;
@@ -339,6 +376,7 @@ window.addEventListener("DOMContentLoaded", () => {
   initCursor();
   initBackground();
   initHorizontal();
+  initVerticalTimeline();
   initWiper();
   initScrollReveals();
   initNavigation();
