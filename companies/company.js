@@ -7,10 +7,19 @@
      4. Hero Parallax
    View Transition rules:
      - back btn  - simple cross-fade (least jarring, feels like "back")
-     - sibling   - clip-path vertical wipe (distinct from back/forward)
-     - Named transition (company-hero) is DISABLED on company pages
-       to avoid fighting the sibling/back transitions.
+    - sibling   - left and right slide
+    - Named transition (company-hero) is DISABLED on company pages
+      to avoid fighting the sibling/back transitions.
    ============================================================= */
+
+// Sync View Transition state across documents
+(function syncVT() {
+  const direction = sessionStorage.getItem("filpride_vt_direction");
+  if (direction) {
+    document.documentElement.setAttribute("data-nav", direction);
+    sessionStorage.removeItem("filpride_vt_direction");
+  }
+})();
 
 
 // SLUG - NUMBER MAP
@@ -44,8 +53,9 @@ function initBackNavigation() {
     e.preventDefault();
     const href = btn.getAttribute("data-href") || "../index.html";
 
-    // Mark direction so index-side CSS can respond if needed
+    // Mark direction so both old and new documents can coordinate
     document.documentElement.setAttribute("data-nav", "back");
+    sessionStorage.setItem("filpride_vt_direction", "back");
 
     if (!supportsVT) { window.location.href = href; return; }
 
@@ -54,38 +64,30 @@ function initBackNavigation() {
 }
 
 
-// 1b. SIBLING NAVIGATION  -  company  company
-// Transition: vertical clip-path wipe.
-// The number flash overlay is injected and
-// hidden from the VT snapshot using a
-// visibility trick so it doesn't appear
-// in the "old page" screenshot.
+// 1b. SIBLING NAVIGATION  -  company   company
+// Transition: Left / Right slide based on order.
 function initSiblingNavigation() {
+  const keys = Object.keys(COMPANY_MAP);
+
   document.querySelectorAll(".sibling-link[data-href]").forEach(link => {
     link.addEventListener("click", e => {
       e.preventDefault();
       const href = link.getAttribute("data-href");
-      const meta = COMPANY_MAP[href];
-      const num = meta ? meta.num : "-";
 
-      // Create the flash overlay but keep it invisible initially
-      // so the VT API snapshots a clean old-page state
-      const flash = document.createElement("div");
-      flash.className = "vt-number-flash";
-      flash.style.opacity = "0";          // invisible during snapshot
-      flash.innerHTML = `<span>${num}</span>`;
-      document.body.appendChild(flash);
+      // Determine direction by comparing current page to target page
+      const currentFile = window.location.pathname.split("/").pop();
+      const currentIndex = keys.indexOf(currentFile);
+      const targetIndex = keys.indexOf(href);
 
-      // Tag html so CSS picks the sibling keyframes
-      document.documentElement.setAttribute("data-nav", "sibling");
+      const direction = (currentIndex !== -1 && targetIndex !== -1 && targetIndex < currentIndex)
+        ? "sibling-backward"
+        : "sibling-forward";
 
-      // Flash overlay for native cross-document view transitions
-      flash.style.opacity = "1";
-      flash.style.transition = "opacity 0.1s";
-      
-      setTimeout(() => {
-        window.location.href = href;
-      }, 30);
+      // Tag html so CSS picks the slide keyframes
+      document.documentElement.setAttribute("data-nav", direction);
+      sessionStorage.setItem("filpride_vt_direction", direction);
+
+      window.location.href = href;
     });
   });
 }

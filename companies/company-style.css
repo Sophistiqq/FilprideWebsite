@@ -70,30 +70,28 @@ body {
   }
 }
 
-/* Vertical wipe out: page slides up and clips away */
-@keyframes vt-wipe-out {
-  from {
-    clip-path: inset(0 0 0 0);
-    opacity: 1;
-  }
-
-  to {
-    clip-path: inset(0 0 100% 0);
-    opacity: 1;
-  }
+/* --- Left slide out --- */
+@keyframes vt-slide-left-out {
+  from { transform: translateX(0); }
+  to { transform: translateX(-30%); }
 }
 
-/* Vertical wipe in: new page rises from bottom */
-@keyframes vt-wipe-in {
-  from {
-    clip-path: inset(100% 0 0 0);
-    opacity: 1;
-  }
+/* --- Left slide in --- */
+@keyframes vt-slide-left-in {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
 
-  to {
-    clip-path: inset(0 0 0 0);
-    opacity: 1;
-  }
+/* --- Right slide out --- */
+@keyframes vt-slide-right-out {
+  from { transform: translateX(0); }
+  to { transform: translateX(30%); }
+}
+
+/* --- Right slide in --- */
+@keyframes vt-slide-right-in {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
 }
 
 @view-transition {
@@ -118,36 +116,23 @@ html[data-nav="back"]::view-transition-new(root) {
   animation: 300ms ease both vt-fade-in;
 }
 
-/* --- B) Sibling transition: vertical wipe --- */
-html[data-nav="sibling"]::view-transition-old(root) {
-  animation: 480ms cubic-bezier(0.76, 0, 0.24, 1) both vt-wipe-out;
+/* --- B) Sibling transition: Horizontal Slide --- */
+html[data-nav="sibling-forward"]::view-transition-old(root) {
+  animation: 600ms cubic-bezier(0.22, 1, 0.36, 1) both vt-slide-left-out;
+}
+html[data-nav="sibling-forward"]::view-transition-new(root) {
+  animation: 600ms cubic-bezier(0.22, 1, 0.36, 1) both vt-slide-left-in;
+  /* Ensure the incoming page slides on top */
+  z-index: 2;
 }
 
-html[data-nav="sibling"]::view-transition-new(root) {
-  animation: 480ms cubic-bezier(0.76, 0, 0.24, 1) both vt-wipe-in;
+html[data-nav="sibling-backward"]::view-transition-old(root) {
+  animation: 600ms cubic-bezier(0.22, 1, 0.36, 1) both vt-slide-right-out;
 }
-
-/* --- Number flash overlay (sibling only) --- */
-.vt-number-flash {
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--accent);
-  pointer-events: none;
-  transition: opacity 0.15s ease;
-}
-
-.vt-number-flash span {
-  font-family: 'Barlow Condensed', sans-serif;
-  font-size: clamp(10rem, 28vw, 20rem);
-  font-weight: 900;
-  color: rgba(0, 0, 0, 0.12);
-  line-height: 1;
-  letter-spacing: -0.04em;
-  user-select: none;
+html[data-nav="sibling-backward"]::view-transition-new(root) {
+  animation: 600ms cubic-bezier(0.22, 1, 0.36, 1) both vt-slide-right-in;
+  /* Ensure the incoming page slides on top */
+  z-index: 2;
 }
 
 
