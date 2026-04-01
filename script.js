@@ -326,7 +326,7 @@ function initScrollReveals() {
 }
 
 
-// 8. NAVIGATION - index  company page
+// 8. NAVIGATION - index - company page
 // Named transition (company-hero) is assigned
 // to exactly ONE card at click time, ensuring
 // no duplicate view-transition-name conflicts.

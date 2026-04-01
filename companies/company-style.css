@@ -39,7 +39,7 @@ body {
 }
 
 
-/* �������������������������������������������
+/* ===============================================================
    VIEW TRANSITION - COMPANY PAGES
    Two transition types fire from company pages:
 
@@ -55,7 +55,7 @@ body {
    DEFAULT (no data-nav) - cross-fade fallback.
    Named transition (company-hero) is NOT used
    here; it only fires in style.css direction.
-   ������������������������������������������� */
+   =============================================================== */
 
 /* --- Keyframes --- */
 @keyframes vt-fade-out {
@@ -72,26 +72,46 @@ body {
 
 /* --- Left slide out --- */
 @keyframes vt-slide-left-out {
-  from { transform: translateX(0); }
-  to { transform: translateX(-30%); }
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-30%);
+  }
 }
 
 /* --- Left slide in --- */
 @keyframes vt-slide-left-in {
-  from { transform: translateX(100%); }
-  to { transform: translateX(0); }
+  from {
+    transform: translateX(100%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
 }
 
 /* --- Right slide out --- */
 @keyframes vt-slide-right-out {
-  from { transform: translateX(0); }
-  to { transform: translateX(30%); }
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(30%);
+  }
 }
 
 /* --- Right slide in --- */
 @keyframes vt-slide-right-in {
-  from { transform: translateX(-100%); }
-  to { transform: translateX(0); }
+  from {
+    transform: translateX(-100%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
 }
 
 @view-transition {
@@ -120,6 +140,7 @@ html[data-nav="back"]::view-transition-new(root) {
 html[data-nav="sibling-forward"]::view-transition-old(root) {
   animation: 600ms cubic-bezier(0.22, 1, 0.36, 1) both vt-slide-left-out;
 }
+
 html[data-nav="sibling-forward"]::view-transition-new(root) {
   animation: 600ms cubic-bezier(0.22, 1, 0.36, 1) both vt-slide-left-in;
   /* Ensure the incoming page slides on top */
@@ -129,6 +150,7 @@ html[data-nav="sibling-forward"]::view-transition-new(root) {
 html[data-nav="sibling-backward"]::view-transition-old(root) {
   animation: 600ms cubic-bezier(0.22, 1, 0.36, 1) both vt-slide-right-out;
 }
+
 html[data-nav="sibling-backward"]::view-transition-new(root) {
   animation: 600ms cubic-bezier(0.22, 1, 0.36, 1) both vt-slide-right-in;
   /* Ensure the incoming page slides on top */
@@ -136,9 +158,9 @@ html[data-nav="sibling-backward"]::view-transition-new(root) {
 }
 
 
-/* �������������������������������������������
+/* ===============================================================
    COMPANY NAV
-   ������������������������������������������� */
+   =============================================================== */
 .company-nav {
   position: fixed;
   top: 0;
@@ -193,14 +215,14 @@ html[data-nav="sibling-backward"]::view-transition-new(root) {
 }
 
 
-/* �������������������������������������������
+/* ===============================================================
    COMPANY HERO
    view-transition-name is set via inline style
    on the <section> tag in each HTML file.
    It is intentionally NOT set in CSS here to
    avoid it being active during sibling/back
    transitions (which don't use it).
-   ������������������������������������������� */
+   =============================================================== */
 .company-hero {
   position: relative;
   width: 100%;
@@ -262,9 +284,9 @@ html[data-nav="sibling-backward"]::view-transition-new(root) {
 }
 
 
-/* �������������������������������������������
+/* ===============================================================
    BODY SECTIONS
-   ������������������������������������������� */
+   =============================================================== */
 .company-section {
   padding: 10vh 6rem;
   max-width: 1300px;
@@ -310,9 +332,9 @@ html[data-nav="sibling-backward"]::view-transition-new(root) {
 }
 
 
-/* �������������������������������������������
+/* ===============================================================
    STAT STRIP
-   ������������������������������������������� */
+   =============================================================== */
 .stat-strip {
   display: flex;
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -357,9 +379,9 @@ html[data-nav="sibling-backward"]::view-transition-new(root) {
 }
 
 
-/* �������������������������������������������
+/* ===============================================================
    SIBLING COMPANY STRIP
-   ������������������������������������������� */
+   =============================================================== */
 .other-companies {
   padding: 8vh 6rem;
   background: rgba(255, 255, 255, 0.02);
@@ -404,9 +426,9 @@ html[data-nav="sibling-backward"]::view-transition-new(root) {
 }
 
 
-/* �������������������������������������������
+/* ===============================================================
    FOOTER
-   ������������������������������������������� */
+   =============================================================== */
 .company-footer {
   padding: 4vh 6rem;
   display: flex;
@@ -421,9 +443,9 @@ html[data-nav="sibling-backward"]::view-transition-new(root) {
 }
 
 
-/* �������������������������������������������
+/* ===============================================================
    CURSOR
-   ������������������������������������������� */
+   =============================================================== */
 .cursor-trail {
   position: fixed;
   width: 16px;
@@ -438,12 +460,12 @@ html[data-nav="sibling-backward"]::view-transition-new(root) {
 }
 
 
-/* �������������������������������������������
+/* ===============================================================
    SCROLL REVEAL
    Hero .anim uses CSS keyframe (always fires).
    All other .anim elements start hidden and
    are revealed by IntersectionObserver in JS.
-   ������������������������������������������� */
+   =============================================================== */
 .anim {
   opacity: 0;
   transform: translateY(36px);
@@ -484,9 +506,9 @@ html[data-nav="sibling-backward"]::view-transition-new(root) {
 }
 
 
-/* �������������������������������������������
+/* ===============================================================
    RESPONSIVE
-   ������������������������������������������� */
+   =============================================================== */
 @media (max-width: 900px) {
 
   .company-hero,
