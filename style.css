@@ -782,6 +782,57 @@
    color: var(--white) !important;
  }
 
+ .green-shapes {
+   position: relative;
+   width: 100%;
+   height: 480px;
+   background: rgba(255, 255, 255, 0.03);
+   border: 1px solid rgba(255, 255, 255, 0.1);
+   border-radius: 12px;
+   overflow: hidden;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   backdrop-filter: blur(8px);
+   -webkit-backdrop-filter: blur(8px);
+   background-size: cover;
+   background-position: center;
+ }
+
+ .leaf-shape {
+   position: absolute;
+   width: 180px;
+   height: 180px;
+   background: rgba(26, 92, 56, 0.6);
+   backdrop-filter: blur(12px);
+   -webkit-backdrop-filter: blur(12px);
+   border-radius: 2px 100px 2px 100px;
+   border: 1px solid rgba(255, 255, 255, 0.2);
+   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+   transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+ }
+
+ .leaf-shape:nth-child(1) {
+   transform: rotate(45deg) translate(-20px, -20px);
+   z-index: 2;
+ }
+
+ .leaf-shape:nth-child(2) {
+   transform: rotate(225deg) translate(-10px, -10px);
+   background: rgba(255, 210, 0, 0.2);
+   z-index: 1;
+   width: 220px;
+   height: 220px;
+ }
+
+ .green-shapes:hover .leaf-shape:nth-child(1) {
+   transform: rotate(60deg) translate(0, 0);
+ }
+
+ .green-shapes:hover .leaf-shape:nth-child(2) {
+   transform: rotate(210deg) translate(20px, 20px);
+ }
+
 
  /* HISTORY TIMELINE */
  .history-panel {
@@ -1018,6 +1069,25 @@
      bottom: 3rem;
    }
 
+   .brand-panel {
+     padding: 10vh 2rem;
+   }
+
+   .brand-intro p.lead {
+     font-size: clamp(1.4rem, 5vw, 1.8rem);
+     line-height: 1.4;
+     margin-bottom: 1.5rem;
+   }
+
+   .mega-city {
+     font-size: clamp(2.2rem, 9vw, 4rem);
+   }
+
+   .fade-trigger {
+     padding: 1rem 2.2rem;
+     font-size: 1.2rem;
+   }
+
    .group-card {
      min-width: 280px;
      height: 400px;
@@ -1050,6 +1120,61 @@
 
    .mega-province {
      margin-top: 0.75rem;
+   }
+
+   .history-panel {
+     padding: 10vh 2rem;
+   }
+
+   .massive-year {
+     font-size: clamp(5rem, 20vw, 8rem);
+     margin-bottom: 2rem;
+   }
+
+   .timeline-event {
+     padding: 6vh 0 6vh 2.5rem;
+   }
+
+   .timeline-event::before {
+     top: 6vh;
+   }
+
+   .event-title {
+     font-size: clamp(1.8rem, 6vw, 2.5rem);
+     margin-bottom: 1rem;
+   }
+
+   .event-desc {
+     font-size: 1.1rem;
+     line-height: 1.6;
+   }
+
+   .green-panel {
+     padding: 10vh 2rem;
+   }
+
+   .green-shapes {
+     height: 350px;
+     margin-top: 2rem;
+   }
+
+   .leaf-shape {
+     width: 140px;
+     height: 140px;
+   }
+
+   .leaf-shape:nth-child(2) {
+     width: 180px;
+     height: 180px;
+   }
+
+   .footer-expanded {
+     gap: 3rem;
+     margin-top: 3rem;
+   }
+
+   .cta-link {
+     font-size: clamp(1.8rem, 6vw, 2.2rem);
    }
  }
 
