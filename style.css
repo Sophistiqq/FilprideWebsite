@@ -308,6 +308,15 @@
    margin-bottom: 3rem;
  }
 
+ .hero-eyebrow {
+   font-family: 'DM Mono', monospace;
+   font-size: 1rem;
+   letter-spacing: 0.2em;
+   text-transform: uppercase;
+   color: var(--muted);
+   margin-bottom: 1.5rem;
+ }
+
  .hero-title {
    font-family: 'Barlow Condensed', sans-serif;
    font-size: clamp(3rem, 8vw, 6.5rem);
@@ -329,6 +338,18 @@
    text-transform: uppercase;
    letter-spacing: 0.15em;
    margin-top: 1.5rem;
+ }
+
+ .scroll-indicator {
+   position: absolute;
+   bottom: 4rem;
+   left: 6rem;
+   font-family: 'DM Mono', monospace;
+   font-size: 0.75rem;
+   letter-spacing: 0.3em;
+   text-transform: uppercase;
+   color: var(--muted);
+   opacity: 0.6;
  }
 
  .panel-body p {
@@ -938,6 +959,57 @@
  }
 
  @media (max-width: 768px) {
+   .glass-nav {
+     padding: 1.5rem 2rem;
+   }
+
+   .nav-logo-text {
+     font-size: 1.4rem;
+   }
+
+   .panel {
+     padding: 8vh 2rem;
+   }
+
+   .hero-title {
+     font-size: clamp(2.5rem, 12vw, 4rem);
+   }
+
+   .hero-eyebrow {
+     font-size: 0.85rem;
+     margin-bottom: 1rem;
+   }
+
+   .hero-subtitle {
+     font-size: 1.2rem;
+     letter-spacing: 0.1em;
+   }
+
+   .scroll-indicator {
+     left: 2rem;
+     bottom: 3rem;
+   }
+
+   .group-card {
+     min-width: 280px;
+     height: 400px;
+     padding: 2.5rem 2rem;
+     margin-right: 1.5rem;
+   }
+
+   .group-card h3 {
+     font-size: 1.5rem;
+   }
+
+   .horizontal-wrapper {
+     padding-left: 2rem;
+     padding-right: 10vw;
+   }
+
+   .sticky-content {
+     left: 2rem;
+   }
+
    .mega-item {
      flex-direction: column;
      align-items: flex-start;
