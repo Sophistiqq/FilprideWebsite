@@ -14,6 +14,8 @@
    --ivory: #fff8f0;
    --ink: #0a0a0c;
    --muted: rgba(252, 250, 242, 0.7);
+
+   scroll-behavior: smooth;
  }
 
  body.light-mode {
@@ -282,12 +284,24 @@
    mix-blend-mode: difference;
  }
 
+ .nav-logo {
+   display: flex;
+   align-items: center;
+   gap: 0.6rem;
+   text-decoration: none;
+ }
+
+ .nav-logo-icon {
+   width: 32px;
+   height: 32px;
+   /* filter: brightness(0) invert(1); */
+ }
+
  .nav-logo-text {
    font-family: 'Barlow Condensed', sans-serif;
    font-size: 1.8rem;
    font-weight: 900;
    color: var(--white);
-   text-decoration: none;
  }
 
  .scroll-progress {
@@ -1217,7 +1231,7 @@
    max-width: 600px;
  }
 
-.event-year-mobile {
+ .event-year-mobile {
    display: none;
    font-family: 'Barlow Condensed', sans-serif;
    font-size: 2rem;
@@ -1225,7 +1239,7 @@
    color: var(--accent);
    margin-bottom: 0.5rem;
    line-height: 1;
-}
+ }
 
 
  /* CONTACT / FOOTER */
@@ -1362,6 +1376,11 @@
    .nav-social-link {
      width: 40px;
      height: 40px;
+   }
+
+   .nav-logo-icon {
+     width: 28px;
+     height: 28px;
    }
 
    .nav-logo-text {
