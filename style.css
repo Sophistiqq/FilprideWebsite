@@ -237,6 +237,36 @@
    mix-blend-mode: difference;
  }
 
+ /* Hide custom cursor on touch devices */
+ @media (pointer: coarse) {
+   .cursor-trail {
+     display: none;
+   }
+ }
+
+ /* TAP RIPPLE */
+ .tap-ripple {
+   position: absolute;
+   border-radius: 50%;
+   background: rgba(242, 101, 34, 0.35);
+   pointer-events: none;
+   transform: scale(0);
+   z-index: 1;
+ }
+
+ /* Ensure interactive elements can contain ripples */
+ .nav-link,
+ .nav-social-link,
+ .group-card,
+ .mega-item,
+ .fade-trigger,
+ .bg-trigger,
+ .cta-link,
+ .menu-btn {
+   position: relative;
+   overflow: hidden;
+ }
+
 
  /* NAV */
  .glass-nav {

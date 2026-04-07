@@ -567,10 +567,52 @@ function initNavigationMenu() {
 }
 
 
+// 11. TAP RIPPLE (Touch Devices)
+function initTapRipple() {
+  const targets = document.querySelectorAll(
+    ".nav-link, .nav-social-link, .group-card, .mega-item, .fade-trigger, .bg-trigger, .cta-link, .menu-btn"
+  );
+
+  targets.forEach(el => {
+    el.addEventListener("touchstart", (e) => {
+      const touch = e.touches[0];
+      const rect = el.getBoundingClientRect();
+      const x = touch.clientX - rect.left;
+      const y = touch.clientY - rect.top;
+
+      // Size ripple to cover the element
+      const size = Math.max(rect.width, rect.height) * 2;
+
+      const ripple = document.createElement("span");
+      ripple.className = "tap-ripple";
+      ripple.style.width = `${size}px`;
+      ripple.style.height = `${size}px`;
+      ripple.style.left = `${x - size / 2}px`;
+      ripple.style.top = `${y - size / 2}px`;
+
+      el.appendChild(ripple);
+
+      gsap.fromTo(ripple,
+        { scale: 0, opacity: 1 },
+        {
+          scale: 1,
+          opacity: 0,
+          duration: 0.6,
+          ease: "power2.out",
+          onComplete: () => ripple.remove()
+        }
+      );
+    }, { passive: true });
+  });
+}
+
+
 // INIT
+const isTouchDevice = window.matchMedia("(pointer: coarse)").matches;
+
 window.addEventListener("DOMContentLoaded", () => {
   initLoader();
-  initCursor();
+  if (!isTouchDevice) initCursor();
   initBackground();
   initHorizontal();
   initVerticalTimeline();
@@ -579,4 +621,5 @@ window.addEventListener("DOMContentLoaded", () => {
   initNavigation();
   initMegaList();
   initNavigationMenu();
+  if (isTouchDevice) initTapRipple();
 });
