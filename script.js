@@ -349,7 +349,10 @@ function initNavigation() {
       allCards.forEach(c => { c.style.viewTransitionName = ""; });
       card.style.viewTransitionName = "company-hero";
 
-      window.location.href = href;
+      // Use startViewTransition to properly handle the view transition
+      document.startViewTransition(() => {
+        window.location.href = href;
+      });
     });
   });
 }

@@ -59,7 +59,9 @@ function initBackNavigation() {
 
     if (!supportsVT) { window.location.href = href; return; }
 
-    window.location.href = href;
+    document.startViewTransition(() => {
+      window.location.href = href;
+    });
   });
 }
 
@@ -87,7 +89,9 @@ function initSiblingNavigation() {
       document.documentElement.setAttribute("data-nav", direction);
       sessionStorage.setItem("filpride_vt_direction", direction);
 
-      window.location.href = href;
+      document.startViewTransition(() => {
+        window.location.href = href;
+      });
     });
   });
 }
