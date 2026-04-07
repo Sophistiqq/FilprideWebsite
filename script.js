@@ -373,6 +373,200 @@ function initMegaList() {
   });
 }
 
+
+// 10. FULLSCREEN NAVIGATION MENU
+function initNavigationMenu() {
+  const menuBtn = document.querySelector(".menu-btn");
+  const fullscreenNav = document.querySelector(".fullscreen-nav");
+  const navCircle = document.querySelector(".nav-circle");
+  const navContent = document.querySelector(".nav-content");
+  const navSectionTag = document.querySelector(".nav-section-tag");
+  const navLinkItems = document.querySelectorAll(".nav-link-item");
+  const navLinks = document.querySelectorAll(".nav-link");
+  const navSocials = document.querySelector(".nav-socials");
+  const navSocialLinks = document.querySelectorAll(".nav-social-link");
+
+  let isOpen = false;
+  let animTimeline = null;
+
+  if (!menuBtn || !fullscreenNav) return;
+
+  // Add close text to menu button
+  let closeText = menuBtn.querySelector(".menu-btn-close");
+  if (!closeText) {
+    closeText = document.createElement("span");
+    closeText.className = "menu-btn-close";
+    closeText.textContent = "Close";
+    menuBtn.appendChild(closeText);
+  }
+
+  function openMenu() {
+    if (isOpen) return;
+    isOpen = true;
+
+    // Add active state to menu button (shows "Close" text)
+    menuBtn.classList.add("is-active");
+
+    // Enable pointer events on overlay
+    fullscreenNav.classList.add("is-open");
+
+    // Lock body scroll
+    document.body.classList.add("no-scroll");
+
+    // Calculate the diagonal distance to ensure circle covers entire screen
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+    const maxRadius = Math.sqrt(viewportWidth * viewportWidth + viewportHeight * viewportHeight);
+
+    // Create animation timeline
+    animTimeline = gsap.timeline({ defaults: { ease: "power3.inOut" } });
+
+    // Phase 1: Circle expands from button position
+    animTimeline.to(navCircle, {
+      scale: maxRadius / 24,
+      duration: 0.6,
+      ease: "power2.inOut"
+    });
+
+    // Phase 2: Content fades in
+    animTimeline.to(navContent, {
+      opacity: 1,
+      duration: 0.3
+    }, "-=0.15");
+
+    // Phase 3: Section tag appears
+    animTimeline.to(navSectionTag, {
+      opacity: 1,
+      y: 0,
+      duration: 0.4,
+      ease: "power2.out"
+    }, "-=0.1");
+
+    // Phase 4: Links stagger in
+    animTimeline.to(navLinkItems, {
+      opacity: 1,
+      y: 0,
+      duration: 0.5,
+      stagger: 0.08,
+      ease: "power3.out"
+    }, "-=0.2");
+
+    // Phase 5: Socials fade in
+    animTimeline.to(navSocials, {
+      opacity: 1,
+      y: 0,
+      duration: 0.4,
+      ease: "power2.out"
+    }, "-=0.15");
+  }
+
+  function closeMenu() {
+    if (!isOpen) return;
+    isOpen = false;
+
+    // Remove active state (shows "Menu" text again)
+    menuBtn.classList.remove("is-active");
+
+    // Create reverse animation
+    const closeTl = gsap.timeline({
+      defaults: { ease: "power3.inOut" },
+      onComplete: () => {
+        fullscreenNav.classList.remove("is-open");
+        document.body.classList.remove("no-scroll");
+        gsap.set(navContent, { opacity: 0 });
+        gsap.set(navSectionTag, { opacity: 0, y: 20 });
+        gsap.set(navLinkItems, { opacity: 0, y: 60 });
+        gsap.set(navSocials, { opacity: 0, y: 20 });
+        gsap.set(navCircle, { scale: 0 });
+      }
+    });
+
+    // Phase 1: Socials fade out
+    closeTl.to(navSocials, {
+      opacity: 0,
+      y: 20,
+      duration: 0.25
+    });
+
+    // Phase 2: Links stagger out
+    closeTl.to(navLinkItems, {
+      opacity: 0,
+      y: 60,
+      duration: 0.3,
+      stagger: 0.04,
+      ease: "power2.in"
+    }, "-=0.1");
+
+    // Phase 3: Section tag fades out
+    closeTl.to(navSectionTag, {
+      opacity: 0,
+      y: 20,
+      duration: 0.25
+    }, "-=0.15");
+
+    // Phase 4: Content fades out
+    closeTl.to(navContent, {
+      opacity: 0,
+      duration: 0.2
+    }, "-=0.1");
+
+    // Phase 5: Circle shrinks back
+    closeTl.to(navCircle, {
+      scale: 0,
+      duration: 0.5,
+      ease: "power2.inOut"
+    }, "-=0.05");
+  }
+
+  // Event listeners
+  menuBtn.addEventListener("click", () => {
+    if (isOpen) closeMenu();
+    else openMenu();
+  });
+
+  // Handle link clicks
+  navLinks.forEach(link => {
+    link.addEventListener("click", (e) => {
+      e.preventDefault();
+      const sectionId = link.getAttribute("data-section");
+      const targetSection = document.getElementById(sectionId);
+
+      // Close menu first
+      closeMenu();
+
+      // Scroll to section after menu closes
+      setTimeout(() => {
+        if (targetSection) {
+          targetSection.scrollIntoView({ behavior: "smooth" });
+        }
+      }, 600);
+    });
+  });
+
+  // ESC key to close
+  window.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && isOpen) {
+      closeMenu();
+    }
+  });
+
+  // Add nav elements to cursor hover targets
+  const cursorTargets = [menuBtn, ...navLinks, ...navSocialLinks];
+  cursorTargets.forEach(el => {
+    if (el) {
+      el.addEventListener("mouseenter", () => {
+        const trail = document.querySelector(".cursor-trail");
+        if (trail) gsap.to(trail, { scale: 3, rotation: 135, duration: 0.25 });
+      });
+      el.addEventListener("mouseleave", () => {
+        const trail = document.querySelector(".cursor-trail");
+        if (trail) gsap.to(trail, { scale: 1, rotation: 45, duration: 0.25 });
+      });
+    }
+  });
+}
+
+
 // INIT
 window.addEventListener("DOMContentLoaded", () => {
   initLoader();
@@ -384,4 +578,5 @@ window.addEventListener("DOMContentLoaded", () => {
   initScrollReveals();
   initNavigation();
   initMegaList();
+  initNavigationMenu();
 });
