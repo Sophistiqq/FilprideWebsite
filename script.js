@@ -244,16 +244,29 @@ function initHorizontal() {
 }
 
 
-// 6. VERTICAL TIMELINE 
+// 6. VERTICAL TIMELINE
 function initVerticalTimeline() {
   const events = gsap.utils.toArray(".timeline-event");
   const activeYearEl = document.getElementById("active-year");
+  const highlightEl = document.querySelector(".timeline-highlight");
   if (!events.length || !activeYearEl) return;
+
+  function slideHighlight(event) {
+    if (!highlightEl) return;
+    const rect = event.getBoundingClientRect();
+    const parentRect = event.parentElement.getBoundingClientRect();
+    gsap.to(highlightEl, {
+      top: rect.top - parentRect.top,
+      height: rect.height,
+      duration: 0.6,
+      ease: "power3.out"
+    });
+  }
 
   events.forEach((event, i) => {
     ScrollTrigger.create({
       trigger: event,
-      start: "top 60%", // Activate when event crosses this upper-middle threshold
+      start: "top 60%",
       end: "bottom 60%",
       onEnter: () => activateEvent(event),
       onEnterBack: () => activateEvent(event),
@@ -266,7 +279,6 @@ function initVerticalTimeline() {
 
     const year = el.dataset.year;
     if (activeYearEl.innerText !== year) {
-      // Smooth crossfade for massive year text
       gsap.to(activeYearEl, {
         opacity: 0,
         duration: 0.2,
@@ -276,6 +288,8 @@ function initVerticalTimeline() {
         }
       });
     }
+
+    slideHighlight(el);
   }
 
   if (events[0]) activateEvent(events[0]);
