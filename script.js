@@ -263,7 +263,7 @@ function initVerticalTimeline() {
     });
   }
 
-  events.forEach((event, i) => {
+  events.forEach((event) => {
     ScrollTrigger.create({
       trigger: event,
       start: "top 60%",
