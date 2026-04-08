@@ -314,16 +314,6 @@ function initScrollReveals() {
   });
 
   gsap.utils.toArray(".panel:not(.horizontal-panel)").forEach(panel => {
-    if (panel.classList.contains("light")) {
-      ScrollTrigger.create({
-        trigger: panel, start: "top 50%", end: "bottom 50%",
-        onEnter: () => document.body.classList.add("light-mode"),
-        onLeave: () => document.body.classList.remove("light-mode"),
-        onEnterBack: () => document.body.classList.add("light-mode"),
-        onLeaveBack: () => document.body.classList.remove("light-mode"),
-      });
-    }
-
     const els = panel.querySelectorAll(".animate-text");
     if (els.length) {
       gsap.from(els, {

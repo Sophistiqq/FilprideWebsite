@@ -18,13 +18,6 @@
    scroll-behavior: smooth;
  }
 
- body.light-mode {
-   --bg-primary: #fcfaf2;
-   --text-primary: #0a0a0c;
-   --bg-secondary: #f4f1ed;
-   --muted: rgba(10, 10, 12, 0.7);
- }
-
  *,
  *::before,
  *::after {
@@ -832,9 +825,11 @@
  /* BRAND / WIPER PANEL */
  .brand-panel {
    padding: 20vh 6rem;
-   background: var(--bg-primary);
+   background: #fcfaf2;
+   color: #0a0a0c;
    position: relative;
    overflow: hidden;
+   transition: background 1s ease, color 1s ease;
  }
 
  .wiper-overlay {
@@ -855,8 +850,7 @@
    margin-top: 4rem;
    font-size: 1.25rem;
    line-height: 1.8;
-   color: var(--text-primary);
-   transition: color 1s ease;
+   color: #0a0a0c;
  }
 
  .brand-intro p.lead {
@@ -926,11 +920,11 @@
    opacity: 0;
  }
 
- body.light-mode .mega-list-fade::before {
+ .brand-panel .mega-list-fade::before {
    opacity: 0;
  }
 
- body.light-mode .mega-list-fade::after {
+ .brand-panel .mega-list-fade::after {
    opacity: 1;
  }
 
@@ -949,7 +943,7 @@
    display: flex;
    align-items: center;
    gap: 1rem;
-   background: rgba(252, 250, 242, 0.6);
+   background: rgba(10, 10, 12, 0.6);
    padding: 1.2rem 3rem;
    border-radius: 50px;
    backdrop-filter: blur(10px);
@@ -1030,8 +1024,16 @@
    transition: color 0.4s ease;
  }
 
+ .brand-panel .mega-city {
+   color: #0a0a0c;
+ }
+
  .mega-item:hover .mega-city {
    color: var(--white);
+ }
+
+ .brand-panel .mega-item:hover .mega-city {
+   color: #fcfaf2;
  }
 
  .mega-province {
@@ -1043,22 +1045,42 @@
    transition: color 0.4s ease;
  }
 
+ .brand-panel .mega-province {
+   color: rgba(10, 10, 12, 0.7);
+ }
+
  .mega-item:hover .mega-province {
    color: var(--yellow);
+ }
+
+ .brand-panel .mega-item:hover .mega-province {
+   color: #ffd200;
+ }
+
+ .green-panel {
+   background: #fcfaf2;
+   color: #0a0a0c;
+   transition: background 1s ease, color 1s ease;
  }
 
  .green-panel .big-text,
  .green-panel .panel-body p,
  .green-panel .section-tag {
-   color: var(--white) !important;
+   color: #0a0a0c !important;
+ }
+
+ .brand-panel .big-text,
+ .brand-panel .panel-body p,
+ .brand-panel .section-tag {
+   color: #0a0a0c !important;
  }
 
  .green-shapes {
    position: relative;
    width: 100%;
    height: 480px;
-   background: rgba(255, 255, 255, 0.03);
-   border: 1px solid rgba(255, 255, 255, 0.1);
+   background: rgba(10, 10, 12, 0.03);
+   border: 1px solid rgba(10, 10, 12, 0.1);
    border-radius: 12px;
    overflow: hidden;
    display: flex;
